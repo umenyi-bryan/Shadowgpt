@@ -9,6 +9,7 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
+  const [copiedTool, setCopiedTool] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -19,10 +20,20 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
+  const copyToClipboard = async (text, toolName) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedTool(toolName);
+      setTimeout(() => setCopiedTool(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { role: 'user', content: input };
+    const userMessage = { role: 'user', content: input, type: 'text' };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -42,6 +53,7 @@ export default function Home() {
         const assistantMessage = { 
           role: 'assistant', 
           content: data.response,
+          type: data.type || 'text',
           timestamp: new Date().toLocaleTimeString()
         };
         setMessages(prev => [...prev, assistantMessage]);
@@ -51,6 +63,7 @@ export default function Home() {
       const errorMessage = { 
         role: 'assistant', 
         content: 'Error: Unable to connect to ShadowGPT. Please try again.',
+        type: 'text',
         timestamp: new Date().toLocaleTimeString()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -67,23 +80,63 @@ export default function Home() {
   };
 
   const quickCommands = [
+    "Create port scanner tool",
     "Explain SQL injection",
     "How to use nmap",
-    "Metasploit basics",
-    "Burp Suite tutorial",
-    "OWASP Top 10",
-    "Web app pentesting",
-    "Network security",
-    "Cryptography basics"
+    "Make vulnerability scanner",
+    "Generate hash cracker",
+    "What can you do?",
+    "Help with Metasploit",
+    "Web app testing guide"
+  ];
+
+  const toolTemplates = [
+    { name: 'Port Scanner', command: 'Create a port scanner tool', lang: 'bash' },
+    { name: 'Vuln Scanner', command: 'Make a web vulnerability scanner', lang: 'bash' },
+    { name: 'Hash Cracker', command: 'Generate hash cracking tool', lang: 'bash' },
+    { name: 'Network Monitor', command: 'Create network traffic monitor', lang: 'python' }
   ];
 
   const pentestingPhases = [
     { phase: "Reconnaissance", icon: "🔍", description: "Information gathering" },
     { phase: "Scanning", icon: "📡", description: "Vulnerability detection" },
-    { phase: "Gaining Access", icon: "⚡", description: "Exploitation" },
-    { phase: "Maintaining Access", icon: "🔐", description: "Persistence" },
-    { phase: "Covering Tracks", icon: "🕵️", description: "Forensics evasion" }
+    { phase: "Exploitation", icon: "⚡", description: "Gaining access" },
+    { phase: "Post-Exploit", icon: "🔐", description: "Maintaining access" },
+    { phase: "Reporting", icon: "📊", description: "Documentation" }
   ];
+
+  const renderMessageContent = (message) => {
+    if (message.type === 'tool') {
+      return (
+        <div className="space-y-3">
+          <div className="text-sm whitespace-pre-wrap">{message.content.split('\n\n')[0]}</div>
+          <div className="bg-black border border-neon-green/30 rounded-lg p-4 relative">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-neon-green/70 font-mono">Generated Tool</span>
+              <button
+                onClick={() => copyToClipboard(message.content, 'tool')}
+                className="text-xs bg-neon-green/20 text-neon-green px-2 py-1 rounded hover:bg-neon-green/30 transition-colors"
+              >
+                {copiedTool === 'tool' ? '✅ Copied!' : '📋 Copy'}
+              </button>
+            </div>
+            <pre className="text-xs text-neon-green font-mono overflow-x-auto">
+              {message.content.split('\n\n').slice(1).join('\n\n')}
+            </pre>
+          </div>
+        </div>
+      );
+    }
+
+    // Regular text message with basic markdown support
+    const content = message.content
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\`\`\`([^]+?)\`\`\`/g, '<pre class="bg-black p-2 rounded my-2 overflow-x-auto"><code>$1</code></pre>')
+      .replace(/\`(.*?)\`/g, '<code class="bg-black px-1 rounded">$1</code>')
+      .replace(/\n/g, '<br>');
+
+    return <div className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content }} />;
+  };
 
   return (
     <div className="min-h-screen bg-dark-200 text-neon-green">
@@ -95,14 +148,14 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-3 h-3 bg-neon-green rounded-full glow"></div>
-              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v2.0</h1>
+              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v3.0</h1>
             </div>
             <div className="text-sm text-neon-green/70">
-              Created by <span className="text-neon-green glow">bedusec</span>
+              Advanced AI by <span className="text-neon-green glow">bedusec</span>
             </div>
           </div>
           <p className="text-neon-green/60 text-sm mt-2">
-            Advanced Pentesting AI Assistant - The Ultimate Ethical Hacking Companion
+            Ultimate Pentesting Assistant - Tool Creation & Security Analysis
           </p>
           
           {/* Navigation Tabs */}
@@ -130,7 +183,7 @@ export default function Home() {
           <h3 className="text-neon-green/70 text-sm mb-3">PENTESTING PHASES:</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {pentestingPhases.map((phase, index) => (
-              <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center">
+              <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center hover:border-neon-green transition-colors">
                 <div className="text-2xl mb-1">{phase.icon}</div>
                 <div className="text-xs font-bold text-neon-green">{phase.phase}</div>
                 <div className="text-xs text-neon-green/60">{phase.description}</div>
@@ -142,19 +195,36 @@ export default function Home() {
         {/* Tab Content */}
         {activeTab === 'chat' && (
           <>
-            {/* Quick Commands */}
-            <div className="mb-6">
-              <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
-              <div className="flex flex-wrap gap-2">
-                {quickCommands.map((cmd, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setInput(cmd)}
-                    className="px-3 py-1 bg-dark-300 border border-neon-green/30 rounded text-xs hover:bg-neon-green/10 transition-colors hover:glow"
-                  >
-                    {cmd}
-                  </button>
-                ))}
+            {/* Quick Commands & Tool Templates */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div>
+                <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {quickCommands.map((cmd, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setInput(cmd)}
+                      className="px-3 py-1 bg-dark-300 border border-neon-green/30 rounded text-xs hover:bg-neon-green/10 transition-colors hover:glow"
+                    >
+                      {cmd}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-neon-green/70 text-sm mb-3">TOOL TEMPLATES:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {toolTemplates.map((tool, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setInput(tool.command)}
+                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors hover:glow"
+                    >
+                      {tool.name} ({tool.lang})
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -166,10 +236,10 @@ export default function Home() {
                   <div className="text-center text-neon-green/50 h-full flex items-center justify-center">
                     <div>
                       <div className="text-4xl mb-4">🛡️</div>
-                      <p className="text-lg mb-2 glow">ShadowGPT v2.0 Activated</p>
-                      <p className="text-sm">Your advanced pentesting assistant is ready</p>
+                      <p className="text-lg mb-2 glow">ShadowGPT v3.0 Activated</p>
+                      <p className="text-sm">Advanced Pentesting AI with Tool Creation</p>
                       <p className="text-xs mt-4 text-neon-green/40">
-                        Ask about penetration testing, ethical hacking, security tools, and more...
+                        Ask about pentesting, create tools, or just chat!
                       </p>
                     </div>
                   </div>
@@ -194,7 +264,7 @@ export default function Home() {
                         <span className="text-xs text-neon-green/50">{message.timestamp}</span>
                       )}
                     </div>
-                    <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                    {renderMessageContent(message)}
                   </div>
                 ))}
                 
@@ -206,7 +276,7 @@ export default function Home() {
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                       </div>
-                      <span className="text-xs text-neon-purple">ShadowGPT is thinking...</span>
+                      <span className="text-xs text-neon-purple">ShadowGPT is processing...</span>
                     </div>
                   </div>
                 )}
@@ -221,7 +291,7 @@ export default function Home() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask about pentesting, ethical hacking, security tools..."
+                      placeholder="Ask about pentesting, create tools, or just chat..."
                       className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green resize-none"
                       rows="2"
                       disabled={isLoading}
@@ -236,7 +306,7 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="text-xs text-neon-green/50 mt-2 text-center">
-                  Press Enter to send • Shift+Enter for new line
+                  Press Enter to send • Ask for tools, explanations, or casual chat
                 </div>
               </div>
             </div>
@@ -263,7 +333,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-6 text-center text-neon-green/40 text-xs">
           <p>⚠️ For educational and authorized testing purposes only • Always obtain proper authorization</p>
-          <p className="mt-1">Created with ❤️ by <span className="text-neon-green">bedusec</span> • Use responsibly and ethically</p>
+          <p className="mt-1">Created with ❤️ by <span className="text-neon-green">bedusec</span> • Advanced AI Pentesting Assistant v3.0</p>
         </footer>
       </div>
     </div>
