@@ -9,8 +9,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No message provided' }, { status: 400 });
     }
 
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 700));
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     const aiEngine = new AdvancedAIEngine();
     const analysis = aiEngine.analyzeQuery(message);

@@ -1,8 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import MatrixRain from './components/MatrixRain';
-import AdvancedTerminal from './components/AdvancedTerminal';
-import ToolsDashboard from './components/ToolsDashboard';
 import CodeBlock from './components/CodeBlock';
 
 export default function Home() {
@@ -55,21 +53,6 @@ export default function Home() {
   };
 
   const renderMessageContent = (message) => {
-    if (message.type === 'tool') {
-      const parts = extractCodeBlocks(message.content);
-      return (
-        <div className="space-y-3">
-          {parts.map((part, index) => 
-            part.type === 'code' ? (
-              <CodeBlock key={index} code={part.content} language={part.language} />
-            ) : (
-              <div key={index} className="text-sm whitespace-pre-wrap">{part.content}</div>
-            )
-          )}
-        </div>
-      );
-    }
-
     const parts = extractCodeBlocks(message.content);
     
     return (
@@ -122,7 +105,6 @@ export default function Home() {
         };
         setMessages(prev => [...prev, assistantMessage]);
         
-        // Show analysis info if available
         if (data.analysis) {
           setAnalysisInfo(data.analysis);
         }
@@ -149,38 +131,34 @@ export default function Home() {
   };
 
   const quickCommands = [
-    "Create advanced port scanner",
-    "Explain SQL injection prevention",
+    "Create port scanner tool",
+    "Explain SQL injection",
     "Generate vulnerability scanner",
-    "How to use advanced nmap",
-    "Make network monitor tool",
+    "How to use nmap",
+    "Make hash cracker tool",
     "What are OWASP Top 10?",
-    "Create web crawler script",
-    "Analyze password security"
+    "Web security basics",
+    "Network scanning techniques"
   ];
 
   const advancedTools = [
-    { name: 'Advanced Port Scanner', command: 'Create advanced port scanner tool', lang: 'bash', desc: 'Parallel scanning with service detection' },
-    { name: 'Vulnerability Scanner', command: 'Generate comprehensive vulnerability scanner', lang: 'bash', desc: 'Multi-vector security testing' },
-    { name: 'Hash Cracker', command: 'Create advanced hash cracking tool', lang: 'bash', desc: 'Multi-algorithm with performance optimization' },
-    { name: 'Network Monitor', command: 'Make advanced network traffic monitor', lang: 'python', desc: 'Real-time protocol analysis' },
-    { name: 'Web Crawler', command: 'Create advanced web crawler script', lang: 'python', desc: 'Comprehensive site mapping' },
-    { name: 'Password Analyzer', command: 'Generate password security analyzer', lang: 'python', desc: 'Strength assessment and recommendations' }
+    { name: 'Port Scanner', command: 'Create port scanner tool', lang: 'bash' },
+    { name: 'Vulnerability Scanner', command: 'Generate vulnerability scanner', lang: 'bash' },
+    { name: 'Hash Cracker', command: 'Make hash cracker tool', lang: 'bash' }
   ];
 
   const pentestingPhases = [
-    { phase: "Intelligence", icon: "🔍", description: "Advanced reconnaissance" },
-    { phase: "Scanning", icon: "📡", description: "Vulnerability assessment" },
-    { phase: "Exploitation", icon: "⚡", description: "Advanced exploitation" },
-    { phase: "Post-Exploit", icon: "🔐", description: "Persistence & movement" },
-    { phase: "Reporting", icon: "📊", description: "Comprehensive analysis" }
+    { phase: "Reconnaissance", icon: "🔍", description: "Information gathering" },
+    { phase: "Scanning", icon: "📡", description: "Vulnerability detection" },
+    { phase: "Exploitation", icon: "⚡", description: "Gaining access" },
+    { phase: "Post-Exploit", icon: "🔐", description: "Maintaining access" },
+    { phase: "Reporting", icon: "📊", description: "Documentation" }
   ];
 
   return (
     <div className="min-h-screen bg-dark-200 text-neon-green">
       <MatrixRain />
       
-      {/* Header */}
       <header className="border-b border-neon-green/30 bg-dark-100/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -194,12 +172,11 @@ export default function Home() {
             </div>
           </div>
           <p className="text-neon-green/60 text-sm mt-2">
-            Advanced AI Pentesting Assistant - Now with Enhanced Capabilities & Smart Analysis
+            Advanced AI Pentesting Assistant - Smart Analysis & Tool Generation
           </p>
           
-          {/* Navigation Tabs */}
           <div className="flex space-x-1 mt-4">
-            {['chat', 'tools', 'terminal', 'analysis'].map((tab) => (
+            {['chat', 'analysis'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -217,7 +194,6 @@ export default function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
-        {/* Analysis Info Banner */}
         {analysisInfo && activeTab === 'chat' && (
           <div className="mb-4 p-3 bg-dark-300 border border-neon-purple/30 rounded-lg">
             <div className="flex items-center justify-between">
@@ -225,8 +201,7 @@ export default function Home() {
                 <span className="text-xs text-neon-purple font-bold">AI ANALYSIS</span>
                 <div className="text-xs text-neon-green/70 mt-1">
                   Category: <span className="text-neon-green">{analysisInfo.category}</span> • 
-                  Complexity: <span className="text-neon-green">{analysisInfo.complexity}</span> • 
-                  Topics: <span className="text-neon-green">{analysisInfo.topics.join(', ') || 'general'}</span>
+                  Complexity: <span className="text-neon-green">{analysisInfo.complexity}</span>
                 </div>
               </div>
               <button 
@@ -239,12 +214,11 @@ export default function Home() {
           </div>
         )}
 
-        {/* Pentesting Phases */}
         <div className="mb-6">
-          <h3 className="text-neon-green/70 text-sm mb-3">ADVANCED PENTESTING PHASES:</h3>
+          <h3 className="text-neon-green/70 text-sm mb-3">PENTESTING PHASES:</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {pentestingPhases.map((phase, index) => (
-              <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center hover:border-neon-green transition-colors">
+              <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center">
                 <div className="text-2xl mb-1">{phase.icon}</div>
                 <div className="text-xs font-bold text-neon-green">{phase.phase}</div>
                 <div className="text-xs text-neon-green/60">{phase.description}</div>
@@ -253,10 +227,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tab Content */}
         {activeTab === 'chat' && (
           <>
-            {/* Quick Commands & Advanced Tools */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
                 <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
@@ -265,7 +237,7 @@ export default function Home() {
                     <button
                       key={index}
                       onClick={() => setInput(cmd)}
-                      className="px-3 py-1 bg-dark-300 border border-neon-green/30 rounded text-xs hover:bg-neon-green/10 transition-colors hover:glow"
+                      className="px-3 py-1 bg-dark-300 border border-neon-green/30 rounded text-xs hover:bg-neon-green/10 transition-colors"
                     >
                       {cmd}
                     </button>
@@ -274,34 +246,31 @@ export default function Home() {
               </div>
               
               <div>
-                <h3 className="text-neon-green/70 text-sm mb-3">ADVANCED TOOLS:</h3>
+                <h3 className="text-neon-green/70 text-sm mb-3">TOOLS:</h3>
                 <div className="flex flex-wrap gap-2">
                   {advancedTools.map((tool, index) => (
                     <button
                       key={index}
                       onClick={() => setInput(tool.command)}
-                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors hover:glow group relative"
-                      title={tool.desc}
+                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors"
                     >
-                      {tool.name} <span className="text-neon-purple/60">({tool.lang})</span>
+                      {tool.name} ({tool.lang})
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Chat Container */}
             <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm h-[500px] flex flex-col">
-              {/* Messages */}
               <div className="flex-1 overflow-y-auto terminal-scrollbar p-4 space-y-4">
                 {messages.length === 0 && (
                   <div className="text-center text-neon-green/50 h-full flex items-center justify-center">
                     <div>
                       <div className="text-4xl mb-4">🛡️</div>
-                      <p className="text-lg mb-2 glow">ShadowGPT v4.0 - Advanced AI Active</p>
-                      <p className="text-sm">Enhanced with smart analysis and advanced tool generation</p>
+                      <p className="text-lg mb-2 glow">ShadowGPT v4.0 Active</p>
+                      <p className="text-sm">Advanced AI Pentesting Assistant</p>
                       <p className="text-xs mt-4 text-neon-green/40">
-                        Ask technical questions, create advanced tools, or explore cybersecurity concepts
+                        Ask questions, create tools, or explore cybersecurity
                       </p>
                     </div>
                   </div>
@@ -338,14 +307,13 @@ export default function Home() {
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                       </div>
-                      <span className="text-xs text-neon-purple">Advanced AI processing...</span>
+                      <span className="text-xs text-neon-purple">AI processing...</span>
                     </div>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input Area */}
               <div className="border-t border-neon-green/20 p-4">
                 <div className="flex space-x-3">
                   <div className="flex-1">
@@ -353,7 +321,7 @@ export default function Home() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask advanced cybersecurity questions, create tools, or explore concepts..."
+                      placeholder="Ask cybersecurity questions or create tools..."
                       className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green resize-none"
                       rows="2"
                       disabled={isLoading}
@@ -362,34 +330,17 @@ export default function Home() {
                   <button
                     onClick={sendMessage}
                     disabled={isLoading || !input.trim()}
-                    className="px-6 py-2 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors glow"
+                    className="px-6 py-2 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     SEND
                   </button>
                 </div>
                 <div className="text-xs text-neon-green/50 mt-2 text-center">
-                  Press Enter to send • Advanced AI analysis active
+                  Press Enter to send • Advanced AI features active
                 </div>
               </div>
             </div>
           </>
-        )}
-
-        {activeTab === 'tools' && (
-          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">Advanced Security Tools Dashboard</h3>
-            <ToolsDashboard />
-          </div>
-        )}
-
-        {activeTab === 'terminal' && (
-          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">Advanced Terminal</h3>
-            <AdvancedTerminal />
-            <div className="mt-4 text-xs text-neon-green/60">
-              <p>Enhanced terminal with advanced command recognition and execution</p>
-            </div>
-          </div>
         )}
 
         {activeTab === 'analysis' && (
@@ -399,33 +350,30 @@ export default function Home() {
               <div className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
                 <h4 className="text-neon-green font-bold mb-3">Advanced Features</h4>
                 <ul className="text-sm space-y-2 text-neon-green/80">
-                  <li>• Smart query categorization and analysis</li>
-                  <li>• Context-aware response generation</li>
-                  <li>• Multi-domain cybersecurity knowledge</li>
-                  <li>• Advanced tool creation with templates</li>
-                  <li>• Complexity assessment and tailored responses</li>
-                  <li>• Real-time conversation analysis</li>
+                  <li>• Smart query categorization</li>
+                  <li>• Context-aware responses</li>
+                  <li>• Multi-domain knowledge</li>
+                  <li>• Advanced tool generation</li>
+                  <li>• Complexity assessment</li>
                 </ul>
               </div>
               <div className="bg-dark-300 border border-neon-purple/20 rounded-lg p-4">
                 <h4 className="text-neon-purple font-bold mb-3">Knowledge Domains</h4>
                 <ul className="text-sm space-y-2 text-neon-purple/80">
-                  <li>• Comprehensive pentesting methodologies</li>
-                  <li>• Advanced vulnerability analysis</li>
-                  <li>• Network security protocols</li>
-                  <li>• Web application security (OWASP)</li>
-                  <li>• Programming and scripting (Python, Bash)</li>
-                  <li>• Social engineering techniques</li>
+                  <li>• Pentesting methodologies</li>
+                  <li>• Vulnerability analysis</li>
+                  <li>• Network security</li>
+                  <li>• Web application security</li>
+                  <li>• Programming and scripting</li>
                 </ul>
               </div>
             </div>
           </div>
         )}
 
-        {/* Footer */}
         <footer className="mt-6 text-center text-neon-green/40 text-xs">
-          <p>⚠️ Advanced AI Pentesting Assistant v4.0 - For educational and authorized testing only</p>
-          <p className="mt-1">Enhanced with comprehensive training by <span className="text-neon-green">bedusec</span> • Use responsibly and ethically</p>
+          <p>⚠️ Advanced AI Pentesting Assistant - For educational purposes only</p>
+          <p className="mt-1">Enhanced by <span className="text-neon-green">bedusec</span> • Use responsibly and ethically</p>
         </footer>
       </div>
     </div>
