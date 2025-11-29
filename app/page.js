@@ -3,13 +3,14 @@ import { useState, useRef, useEffect } from 'react';
 import MatrixRain from './components/MatrixRain';
 import AdvancedTerminal from './components/AdvancedTerminal';
 import ToolsDashboard from './components/ToolsDashboard';
+import CodeBlock from './components/CodeBlock';
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
-  const [copiedTool, setCopiedTool] = useState(null);
+  const [analysisInfo, setAnalysisInfo] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -20,14 +21,76 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
-  const copyToClipboard = async (text, toolName) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedTool(toolName);
-      setTimeout(() => setCopiedTool(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+  const extractCodeBlocks = (content) => {
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = codeBlockRegex.exec(content)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push({
+          type: 'text',
+          content: content.slice(lastIndex, match.index)
+        });
+      }
+
+      parts.push({
+        type: 'code',
+        language: match[1] || 'text',
+        content: match[2].trim()
+      });
+
+      lastIndex = match.index + match[0].length;
     }
+
+    if (lastIndex < content.length) {
+      parts.push({
+        type: 'text',
+        content: content.slice(lastIndex)
+      });
+    }
+
+    return parts.length ? parts : [{ type: 'text', content }];
+  };
+
+  const renderMessageContent = (message) => {
+    if (message.type === 'tool') {
+      const parts = extractCodeBlocks(message.content);
+      return (
+        <div className="space-y-3">
+          {parts.map((part, index) => 
+            part.type === 'code' ? (
+              <CodeBlock key={index} code={part.content} language={part.language} />
+            ) : (
+              <div key={index} className="text-sm whitespace-pre-wrap">{part.content}</div>
+            )
+          )}
+        </div>
+      );
+    }
+
+    const parts = extractCodeBlocks(message.content);
+    
+    return (
+      <div className="space-y-2">
+        {parts.map((part, index) => 
+          part.type === 'code' ? (
+            <CodeBlock key={index} code={part.content} language={part.language} />
+          ) : (
+            <div key={index} className="text-sm whitespace-pre-wrap leading-relaxed">
+              {part.content.split('**').map((text, i) => 
+                i % 2 === 1 ? (
+                  <strong key={i} className="text-neon-green">{text}</strong>
+                ) : (
+                  text
+                )
+              )}
+            </div>
+          )
+        )}
+      </div>
+    );
   };
 
   const sendMessage = async () => {
@@ -37,6 +100,7 @@ export default function Home() {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    setAnalysisInfo(null);
 
     try {
       const response = await fetch('/api/chat', {
@@ -57,6 +121,11 @@ export default function Home() {
           timestamp: new Date().toLocaleTimeString()
         };
         setMessages(prev => [...prev, assistantMessage]);
+        
+        // Show analysis info if available
+        if (data.analysis) {
+          setAnalysisInfo(data.analysis);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -80,63 +149,32 @@ export default function Home() {
   };
 
   const quickCommands = [
-    "Create port scanner tool",
-    "Explain SQL injection",
-    "How to use nmap",
-    "Make vulnerability scanner",
-    "Generate hash cracker",
-    "What can you do?",
-    "Help with Metasploit",
-    "Web app testing guide"
+    "Create advanced port scanner",
+    "Explain SQL injection prevention",
+    "Generate vulnerability scanner",
+    "How to use advanced nmap",
+    "Make network monitor tool",
+    "What are OWASP Top 10?",
+    "Create web crawler script",
+    "Analyze password security"
   ];
 
-  const toolTemplates = [
-    { name: 'Port Scanner', command: 'Create a port scanner tool', lang: 'bash' },
-    { name: 'Vuln Scanner', command: 'Make a web vulnerability scanner', lang: 'bash' },
-    { name: 'Hash Cracker', command: 'Generate hash cracking tool', lang: 'bash' },
-    { name: 'Network Monitor', command: 'Create network traffic monitor', lang: 'python' }
+  const advancedTools = [
+    { name: 'Advanced Port Scanner', command: 'Create advanced port scanner tool', lang: 'bash', desc: 'Parallel scanning with service detection' },
+    { name: 'Vulnerability Scanner', command: 'Generate comprehensive vulnerability scanner', lang: 'bash', desc: 'Multi-vector security testing' },
+    { name: 'Hash Cracker', command: 'Create advanced hash cracking tool', lang: 'bash', desc: 'Multi-algorithm with performance optimization' },
+    { name: 'Network Monitor', command: 'Make advanced network traffic monitor', lang: 'python', desc: 'Real-time protocol analysis' },
+    { name: 'Web Crawler', command: 'Create advanced web crawler script', lang: 'python', desc: 'Comprehensive site mapping' },
+    { name: 'Password Analyzer', command: 'Generate password security analyzer', lang: 'python', desc: 'Strength assessment and recommendations' }
   ];
 
   const pentestingPhases = [
-    { phase: "Reconnaissance", icon: "🔍", description: "Information gathering" },
-    { phase: "Scanning", icon: "📡", description: "Vulnerability detection" },
-    { phase: "Exploitation", icon: "⚡", description: "Gaining access" },
-    { phase: "Post-Exploit", icon: "🔐", description: "Maintaining access" },
-    { phase: "Reporting", icon: "📊", description: "Documentation" }
+    { phase: "Intelligence", icon: "🔍", description: "Advanced reconnaissance" },
+    { phase: "Scanning", icon: "📡", description: "Vulnerability assessment" },
+    { phase: "Exploitation", icon: "⚡", description: "Advanced exploitation" },
+    { phase: "Post-Exploit", icon: "🔐", description: "Persistence & movement" },
+    { phase: "Reporting", icon: "📊", description: "Comprehensive analysis" }
   ];
-
-  const renderMessageContent = (message) => {
-    if (message.type === 'tool') {
-      return (
-        <div className="space-y-3">
-          <div className="text-sm whitespace-pre-wrap">{message.content.split('\n\n')[0]}</div>
-          <div className="bg-black border border-neon-green/30 rounded-lg p-4 relative">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs text-neon-green/70 font-mono">Generated Tool</span>
-              <button
-                onClick={() => copyToClipboard(message.content, 'tool')}
-                className="text-xs bg-neon-green/20 text-neon-green px-2 py-1 rounded hover:bg-neon-green/30 transition-colors"
-              >
-                {copiedTool === 'tool' ? '✅ Copied!' : '📋 Copy'}
-              </button>
-            </div>
-            <pre className="text-xs text-neon-green font-mono overflow-x-auto">
-              {message.content.split('\n\n').slice(1).join('\n\n')}
-            </pre>
-          </div>
-        </div>
-      );
-    }
-
-    // Regular text message with basic markdown support
-    const content = message.content
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\`\`\`([^]+?)\`\`\`/g, '<pre class="bg-black p-2 rounded my-2 overflow-x-auto"><code>$1</code></pre>')
-      .replace(/\`(.*?)\`/g, '<code class="bg-black px-1 rounded">$1</code>')
-      .replace(/\n/g, '<br>');
-
-    return <div className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content }} />;
-  };
 
   return (
     <div className="min-h-screen bg-dark-200 text-neon-green">
@@ -148,19 +186,20 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-3 h-3 bg-neon-green rounded-full glow"></div>
-              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v3.0</h1>
+              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v4.0</h1>
+              <span className="text-xs bg-neon-purple/20 text-neon-purple px-2 py-1 rounded">ADVANCED AI</span>
             </div>
             <div className="text-sm text-neon-green/70">
-              Advanced AI by <span className="text-neon-green glow">bedusec</span>
+              Enhanced by <span className="text-neon-green glow">bedusec</span>
             </div>
           </div>
           <p className="text-neon-green/60 text-sm mt-2">
-            Ultimate Pentesting Assistant - Tool Creation & Security Analysis
+            Advanced AI Pentesting Assistant - Now with Enhanced Capabilities & Smart Analysis
           </p>
           
           {/* Navigation Tabs */}
           <div className="flex space-x-1 mt-4">
-            {['chat', 'tools', 'terminal'].map((tab) => (
+            {['chat', 'tools', 'terminal', 'analysis'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -178,9 +217,31 @@ export default function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Analysis Info Banner */}
+        {analysisInfo && activeTab === 'chat' && (
+          <div className="mb-4 p-3 bg-dark-300 border border-neon-purple/30 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs text-neon-purple font-bold">AI ANALYSIS</span>
+                <div className="text-xs text-neon-green/70 mt-1">
+                  Category: <span className="text-neon-green">{analysisInfo.category}</span> • 
+                  Complexity: <span className="text-neon-green">{analysisInfo.complexity}</span> • 
+                  Topics: <span className="text-neon-green">{analysisInfo.topics.join(', ') || 'general'}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setAnalysisInfo(null)}
+                className="text-xs text-neon-green/50 hover:text-neon-green"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Pentesting Phases */}
         <div className="mb-6">
-          <h3 className="text-neon-green/70 text-sm mb-3">PENTESTING PHASES:</h3>
+          <h3 className="text-neon-green/70 text-sm mb-3">ADVANCED PENTESTING PHASES:</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {pentestingPhases.map((phase, index) => (
               <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center hover:border-neon-green transition-colors">
@@ -195,7 +256,7 @@ export default function Home() {
         {/* Tab Content */}
         {activeTab === 'chat' && (
           <>
-            {/* Quick Commands & Tool Templates */}
+            {/* Quick Commands & Advanced Tools */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
                 <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
@@ -213,15 +274,16 @@ export default function Home() {
               </div>
               
               <div>
-                <h3 className="text-neon-green/70 text-sm mb-3">TOOL TEMPLATES:</h3>
+                <h3 className="text-neon-green/70 text-sm mb-3">ADVANCED TOOLS:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {toolTemplates.map((tool, index) => (
+                  {advancedTools.map((tool, index) => (
                     <button
                       key={index}
                       onClick={() => setInput(tool.command)}
-                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors hover:glow"
+                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors hover:glow group relative"
+                      title={tool.desc}
                     >
-                      {tool.name} ({tool.lang})
+                      {tool.name} <span className="text-neon-purple/60">({tool.lang})</span>
                     </button>
                   ))}
                 </div>
@@ -236,10 +298,10 @@ export default function Home() {
                   <div className="text-center text-neon-green/50 h-full flex items-center justify-center">
                     <div>
                       <div className="text-4xl mb-4">🛡️</div>
-                      <p className="text-lg mb-2 glow">ShadowGPT v3.0 Activated</p>
-                      <p className="text-sm">Advanced Pentesting AI with Tool Creation</p>
+                      <p className="text-lg mb-2 glow">ShadowGPT v4.0 - Advanced AI Active</p>
+                      <p className="text-sm">Enhanced with smart analysis and advanced tool generation</p>
                       <p className="text-xs mt-4 text-neon-green/40">
-                        Ask about pentesting, create tools, or just chat!
+                        Ask technical questions, create advanced tools, or explore cybersecurity concepts
                       </p>
                     </div>
                   </div>
@@ -258,7 +320,7 @@ export default function Home() {
                       <span className={`text-xs font-bold ${
                         message.role === 'user' ? 'text-neon-blue' : 'text-neon-purple'
                       }`}>
-                        {message.role === 'user' ? 'YOU' : 'SHADOWGPT'}
+                        {message.role === 'user' ? 'YOU' : 'SHADOWGPT AI'}
                       </span>
                       {message.timestamp && (
                         <span className="text-xs text-neon-green/50">{message.timestamp}</span>
@@ -276,7 +338,7 @@ export default function Home() {
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                       </div>
-                      <span className="text-xs text-neon-purple">ShadowGPT is processing...</span>
+                      <span className="text-xs text-neon-purple">Advanced AI processing...</span>
                     </div>
                   </div>
                 )}
@@ -291,7 +353,7 @@ export default function Home() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask about pentesting, create tools, or just chat..."
+                      placeholder="Ask advanced cybersecurity questions, create tools, or explore concepts..."
                       className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green resize-none"
                       rows="2"
                       disabled={isLoading}
@@ -306,7 +368,7 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="text-xs text-neon-green/50 mt-2 text-center">
-                  Press Enter to send • Ask for tools, explanations, or casual chat
+                  Press Enter to send • Advanced AI analysis active
                 </div>
               </div>
             </div>
@@ -315,7 +377,7 @@ export default function Home() {
 
         {activeTab === 'tools' && (
           <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">Security Tools Dashboard</h3>
+            <h3 className="text-neon-green text-lg mb-4 glow">Advanced Security Tools Dashboard</h3>
             <ToolsDashboard />
           </div>
         )}
@@ -325,15 +387,45 @@ export default function Home() {
             <h3 className="text-neon-green text-lg mb-4 glow">Advanced Terminal</h3>
             <AdvancedTerminal />
             <div className="mt-4 text-xs text-neon-green/60">
-              <p>Try commands: help, scan, exploit, recon, tools, clear</p>
+              <p>Enhanced terminal with advanced command recognition and execution</p>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'analysis' && (
+          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
+            <h3 className="text-neon-green text-lg mb-4 glow">AI Analysis Dashboard</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
+                <h4 className="text-neon-green font-bold mb-3">Advanced Features</h4>
+                <ul className="text-sm space-y-2 text-neon-green/80">
+                  <li>• Smart query categorization and analysis</li>
+                  <li>• Context-aware response generation</li>
+                  <li>• Multi-domain cybersecurity knowledge</li>
+                  <li>• Advanced tool creation with templates</li>
+                  <li>• Complexity assessment and tailored responses</li>
+                  <li>• Real-time conversation analysis</li>
+                </ul>
+              </div>
+              <div className="bg-dark-300 border border-neon-purple/20 rounded-lg p-4">
+                <h4 className="text-neon-purple font-bold mb-3">Knowledge Domains</h4>
+                <ul className="text-sm space-y-2 text-neon-purple/80">
+                  <li>• Comprehensive pentesting methodologies</li>
+                  <li>• Advanced vulnerability analysis</li>
+                  <li>• Network security protocols</li>
+                  <li>• Web application security (OWASP)</li>
+                  <li>• Programming and scripting (Python, Bash)</li>
+                  <li>• Social engineering techniques</li>
+                </ul>
+              </div>
             </div>
           </div>
         )}
 
         {/* Footer */}
         <footer className="mt-6 text-center text-neon-green/40 text-xs">
-          <p>⚠️ For educational and authorized testing purposes only • Always obtain proper authorization</p>
-          <p className="mt-1">Created with ❤️ by <span className="text-neon-green">bedusec</span> • Advanced AI Pentesting Assistant v3.0</p>
+          <p>⚠️ Advanced AI Pentesting Assistant v4.0 - For educational and authorized testing only</p>
+          <p className="mt-1">Enhanced with comprehensive training by <span className="text-neon-green">bedusec</span> • Use responsibly and ethically</p>
         </footer>
       </div>
     </div>
