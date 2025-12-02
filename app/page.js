@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import MatrixRain from './components/MatrixRain';
 import CodeBlock from './components/CodeBlock';
+import Terminal from './components/Terminal';
+import ToolsDashboard from './components/ToolsDashboard';
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -10,6 +12,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('chat');
   const [analysisInfo, setAnalysisInfo] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -20,13 +23,13 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
-  const languageNames = {
-    en: '🇺🇸 English',
-    fr: '🇫🇷 Français',
-    es: '🇪🇸 Español',
-    ru: '🇷🇺 Русский',
-    pcm: '🇳🇬 Pidgin English',
-    zh: '🇨🇳 中文'
+  const languageOptions = {
+    en: { name: 'English', flag: '🇺🇸' },
+    fr: { name: 'Français', flag: '🇫🇷' },
+    es: { name: 'Español', flag: '🇪🇸' },
+    ru: { name: 'Русский', flag: '🇷🇺' },
+    pcm: { name: 'Pidgin', flag: '🇳🇬' },
+    zh: { name: '中文', flag: '🇨🇳' }
   };
 
   const extractCodeBlocks = (content) => {
@@ -89,7 +92,12 @@ export default function Home() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { role: 'user', content: input, type: 'text' };
+    const userMessage = { 
+      role: 'user', 
+      content: input, 
+      type: 'text',
+      language: selectedLanguage 
+    };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -112,7 +120,7 @@ export default function Home() {
           content: data.response,
           type: data.type || 'text',
           timestamp: new Date().toLocaleTimeString(),
-          language: data.language || 'en'
+          language: data.language
         };
         setMessages(prev => [...prev, assistantMessage]);
         
@@ -144,179 +152,127 @@ export default function Home() {
     }
   };
 
-  const quickCommands = {
-    en: [
-      "Create port scanner tool",
-      "Explain SQL injection",
-      "Generate vulnerability scanner",
-      "How to use nmap",
-      "Web security basics",
-      "What is cybersecurity?"
-    ],
-    fr: [
-      "Créer un scanner de ports",
-      "Expliquer l'injection SQL",
-      "Générer un scanner de vulnérabilités",
-      "Comment utiliser nmap",
-      "Bases de sécurité web",
-      "Qu'est-ce que la cybersécurité?"
-    ],
-    es: [
-      "Crear escáner de puertos",
-      "Explicar inyección SQL",
-      "Generar escáner de vulnerabilidades",
-      "Cómo usar nmap",
-      "Conceptos básicos de seguridad web",
-      "¿Qué es la ciberseguridad?"
-    ],
-    ru: [
-      "Создать сканер портов",
-      "Объяснить SQL-инъекции",
-      "Создать сканер уязвимостей",
-      "Как использовать nmap",
-      "Основы веб-безопасности",
-      "Что такое кибербезопасность?"
-    ],
-    pcm: [
-      "Make port scanner tool",
-      "Explain SQL injection",
-      "Create security checker",
-      "How to use network scanner",
-      "Web safety basics",
-      "Wetin be cybersecurity?"
-    ],
-    zh: [
-      "创建端口扫描工具",
-      "解释SQL注入",
-      "生成漏洞扫描器",
-      "如何使用nmap",
-      "Web安全基础",
-      "什么是网络安全？"
-    ]
-  };
+  const quickCommands = [
+    { text: "Create port scanner tool", icon: "🔧" },
+    { text: "Explain SQL injection", icon: "💉" },
+    { text: "Generate vulnerability scanner", icon: "🛡️" },
+    { text: "How to use nmap", icon: "📡" },
+    { text: "Web security basics", icon: "🌐" },
+    { text: "Network scanning techniques", icon: "🔍" },
+    { text: "Pentesting methodology", icon: "⚡" },
+    { text: "Create hash cracker", icon: "🔓" }
+  ];
 
-  const exampleQueries = {
-    en: [
-      { query: "Hello! Can you help me with cybersecurity?", desc: "Casual greeting" },
-      { query: "Create a port scanner in Python", desc: "Tool creation" },
-      { query: "Explain advanced network security", desc: "Technical explanation" },
-      { query: "How to prevent phishing attacks?", desc: "Security guidance" }
-    ],
-    fr: [
-      { query: "Bonjour! Pouvez-vous m'aider avec la cybersécurité?", desc: "Salutation" },
-      { query: "Créer un scanner de ports en Python", desc: "Création d'outil" },
-      { query: "Expliquer la sécurité réseau avancée", desc: "Explication technique" },
-      { query: "Comment prévenir les attaques de phishing?", desc: "Conseils de sécurité" }
-    ],
-    es: [
-      { query: "¡Hola! ¿Puedes ayudarme con ciberseguridad?", desc: "Saludo" },
-      { query: "Crear un escáner de puertos en Python", desc: "Creación de herramienta" },
-      { query: "Explicar seguridad de red avanzada", desc: "Explicación técnica" },
-      { query: "¿Cómo prevenir ataques de phishing?", desc: "Consejos de seguridad" }
-    ],
-    ru: [
-      { query: "Привет! Можете помочь с кибербезопасностью?", desc: "Приветствие" },
-      { query: "Создать сканер портов на Python", desc: "Создание инструмента" },
-      { query: "Объяснить продвинутую сетевую безопасность", desc: "Техническое объяснение" },
-      { query: "Как предотвратить фишинговые атаки?", desc: "Советы по безопасности" }
-    ],
-    pcm: [
-      { query: "How you dey! You fit help me for cybersecurity?", desc: "Greeting" },
-      { query: "Make port scanner for Python", desc: "Make tool" },
-      { query: "Explain network security well-well", desc: "Explain matter" },
-      { query: "How to stop fake message attacks?", desc: "Security advice" }
-    ],
-    zh: [
-      { query: "你好！你能帮我解决网络安全问题吗？", desc: "问候" },
-      { query: "用Python创建端口扫描器", desc: "工具创建" },
-      { query: "解释高级网络安全", desc: "技术解释" },
-      { query: "如何防止钓鱼攻击？", desc: "安全建议" }
-    ]
-  };
+  const features = [
+    { title: "Multilingual AI", desc: "Speaks 6 languages fluently", icon: "🌍" },
+    { title: "Advanced Tools", desc: "Professional security tool generation", icon: "🛠️" },
+    { title: "Live Terminal", desc: "Interactive command execution", icon: "💻" },
+    { title: "Real-time Analysis", desc: "Smart query processing", icon: "🤖" },
+    { title: "CTF Challenges", desc: "Capture The Flag exercises", icon: "🏴‍☠️" },
+    { title: "Team Collaboration", desc: "Multi-user pentesting", icon: "👥" }
+  ];
 
-  const pentestingPhases = [
-    { phase: "Recon", icon: "🔍", description: "Information gathering" },
-    { phase: "Scanning", icon: "📡", description: "Vulnerability detection" },
-    { phase: "Access", icon: "⚡", description: "Gaining entry" },
-    { phase: "Maintain", icon: "🔐", description: "Persistence" },
-    { phase: "Cover", icon: "🕵️", description: "Clean traces" }
+  const tabs = [
+    { id: 'chat', label: 'Chat', icon: '💬' },
+    { id: 'tools', label: 'Tools', icon: '🛠️' },
+    { id: 'terminal', label: 'Terminal', icon: '💻' },
+    { id: 'labs', label: 'Labs', icon: '🧪' },
+    { id: 'ctf', label: 'CTF', icon: '🏴‍☠️' },
+    { id: 'team', label: 'Team', icon: '👥' }
   ];
 
   return (
-    <div className="min-h-screen bg-dark-200 text-neon-green">
+    <div className="min-h-screen bg-dark-100 text-neon-green">
       <MatrixRain />
       
-      <header className="border-b border-neon-green/30 bg-dark-100/80 backdrop-blur-sm sticky top-0 z-40">
+      <header className="border-b border-neon-green/30 bg-dark-100/90 backdrop-blur-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-3 h-3 bg-neon-green rounded-full glow"></div>
-              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v5.0</h1>
-              <span className="text-xs bg-neon-purple/20 text-neon-purple px-2 py-1 rounded">MULTILINGUAL AI</span>
-            </div>
-            <div className="text-sm text-neon-green/70">
-              Enhanced by <span className="text-neon-green glow">bedusec</span>
-            </div>
-          </div>
-          <p className="text-neon-green/60 text-sm mt-2">
-            Advanced Multilingual Pentesting AI - Speak 6 Languages!
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 gap-3">
-            <div className="flex space-x-1">
-              {['chat', 'languages', 'analysis'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-t-lg text-sm font-medium transition-colors ${
-                    activeTab === tab 
-                      ? 'bg-dark-300 border-t border-l border-r border-neon-green text-neon-green' 
-                      : 'bg-dark-100 text-neon-green/60 hover:text-neon-green'
-                  }`}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-3 h-3 bg-neon-green rounded-full glow absolute -top-1 -right-1"></div>
+                <div className="text-2xl animate-pulse">🛡️</div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold hacker-text">ShadowGPT v6.0</h1>
+                <p className="text-xs text-neon-green/60">Ultimate Pentesting AI Platform</p>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <span className="text-xs text-neon-green/70">Language:</span>
-              <select 
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-dark-300 border border-neon-green/30 rounded px-2 py-1 text-xs text-neon-green"
-              >
-                {Object.entries(languageNames).map(([code, name]) => (
-                  <option key={code} value={code}>{name}</option>
-                ))}
-              </select>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <button
+                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-dark-300 border border-neon-green/30 rounded-lg hover:bg-dark-400 transition-colors"
+                >
+                  <span>{languageOptions[selectedLanguage].flag}</span>
+                  <span className="text-sm">{languageOptions[selectedLanguage].name}</span>
+                  <span className="text-xs">▼</span>
+                </button>
+                
+                {showLanguageMenu && (
+                  <div className="absolute top-full right-0 mt-1 bg-dark-300 border border-neon-green/30 rounded-lg shadow-lg z-50 min-w-[150px]">
+                    {Object.entries(languageOptions).map(([code, { name, flag }]) => (
+                      <button
+                        key={code}
+                        onClick={() => {
+                          setSelectedLanguage(code);
+                          setShowLanguageMenu(false);
+                        }}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-dark-400 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                      >
+                        <span>{flag}</span>
+                        <span>{name}</span>
+                        {selectedLanguage === code && <span className="ml-auto text-neon-green">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-sm text-neon-green/70">
+                by <span className="text-neon-green font-semibold">bedusec</span>
+              </div>
             </div>
+          </div>
+          
+          <div className="mt-4 flex overflow-x-auto pb-2 gap-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-neon-green text-dark-200 shadow-lg shadow-neon-green/30'
+                    : 'bg-dark-300 text-neon-green/60 hover:text-neon-green hover:bg-dark-400'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <main className="container mx-auto px-4 py-6 max-w-7xl">
         {analysisInfo && activeTab === 'chat' && (
-          <div className="mb-4 p-3 bg-dark-300 border border-neon-purple/30 rounded-lg">
+          <div className="mb-4 p-4 bg-dark-300/50 border border-neon-purple/30 rounded-lg backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-neon-purple font-bold">AI ANALYSIS</span>
-                  <span className="text-xs bg-neon-green/20 text-neon-green px-2 py-0.5 rounded">
-                    {languageNames[analysisInfo.language] || 'English'}
-                  </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
+                  <span className="text-xs font-bold text-neon-purple">AI ANALYSIS ACTIVE</span>
                 </div>
-                <div className="text-xs text-neon-green/70 mt-1">
-                  Category: <span className="text-neon-green">{analysisInfo.category}</span> • 
-                  Level: <span className="text-neon-green">{analysisInfo.complexity}</span>
-                  {analysisInfo.topics?.length > 0 && (
-                    <> • Topics: <span className="text-neon-green">{analysisInfo.topics.join(', ')}</span></>
-                  )}
+                <div className="text-xs text-neon-green/70">
+                  Language: <span className="text-neon-green">{analysisInfo.language?.toUpperCase() || 'EN'}</span>
+                  • Category: <span className="text-neon-green">{analysisInfo.category}</span>
+                  • Level: <span className="text-neon-green">{analysisInfo.complexity}</span>
                 </div>
               </div>
               <button 
                 onClick={() => setAnalysisInfo(null)}
-                className="text-xs text-neon-green/50 hover:text-neon-green"
+                className="text-neon-green/50 hover:text-neon-green"
               >
                 ✕
               </button>
@@ -324,154 +280,157 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mb-6">
-          <h3 className="text-neon-green/70 text-sm mb-3">PENTESTING PHASES:</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-            {pentestingPhases.map((phase, index) => (
-              <div key={index} className="bg-dark-300 border border-neon-green/20 rounded p-3 text-center">
-                <div className="text-2xl mb-1">{phase.icon}</div>
-                <div className="text-xs font-bold text-neon-green">{phase.phase}</div>
-                <div className="text-xs text-neon-green/60">{phase.description}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {activeTab === 'chat' && (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div>
-                <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {quickCommands[selectedLanguage]?.map((cmd, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setInput(cmd)}
-                      className="px-3 py-1 bg-dark-300 border border-neon-green/30 rounded text-xs hover:bg-neon-green/10 transition-colors"
-                    >
-                      {cmd}
-                    </button>
-                  ))}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div className="lg:col-span-2">
+                <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-neon-green glow">AI Assistant</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-neon-green rounded-full"></div>
+                        <div className="w-2 h-2 bg-neon-green rounded-full"></div>
+                        <div className="w-2 h-2 bg-neon-green rounded-full"></div>
+                      </div>
+                      <span className="text-xs text-neon-green/60">AI Ready</span>
+                    </div>
+                  </div>
+                  
+                  <div className="h-[400px] overflow-y-auto terminal-scrollbar p-4 space-y-4">
+                    {messages.length === 0 ? (
+                      <div className="h-full flex flex-col items-center justify-center text-center text-neon-green/50">
+                        <div className="text-4xl mb-4 animate-float">🤖</div>
+                        <h3 className="text-xl font-bold mb-2">ShadowGPT v6.0</h3>
+                        <p className="text-sm mb-4">The ultimate multilingual pentesting AI</p>
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          <span className="px-2 py-1 bg-dark-300 rounded text-xs">6 Languages</span>
+                          <span className="px-2 py-1 bg-dark-300 rounded text-xs">Advanced Tools</span>
+                          <span className="px-2 py-1 bg-dark-300 rounded text-xs">Live Terminal</span>
+                          <span className="px-2 py-1 bg-dark-300 rounded text-xs">CTF Challenges</span>
+                        </div>
+                      </div>
+                    ) : (
+                      messages.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`p-4 rounded-lg ${
+                            message.role === 'user'
+                              ? 'bg-neon-green/10 border border-neon-green/20 ml-8'
+                              : 'bg-dark-300/70 border border-neon-purple/20 mr-8'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-bold px-2 py-1 rounded ${
+                                message.role === 'user'
+                                  ? 'bg-neon-green/20 text-neon-green'
+                                  : 'bg-neon-purple/20 text-neon-purple'
+                              }`}>
+                                {message.role === 'user' ? 'YOU' : 'SHADOWGPT'}
+                              </span>
+                              {message.language && message.language !== 'en' && (
+                                <span className="text-xs bg-dark-400 text-neon-green/70 px-1.5 py-0.5 rounded">
+                                  {message.language.toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-xs text-neon-green/50">{message.timestamp}</span>
+                          </div>
+                          {renderMessageContent(message)}
+                        </div>
+                      ))
+                    )}
+                    
+                    {isLoading && (
+                      <div className="p-4 rounded-lg bg-dark-300/70 border border-neon-purple/20 mr-8">
+                        <div className="flex items-center gap-3">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                            <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          </div>
+                          <span className="text-sm text-neon-purple">Processing your request...</span>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                  
+                  <div className="mt-4">
+                    <div className="flex gap-2 mb-2">
+                      {quickCommands.map((cmd, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setInput(cmd.text)}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-dark-300 border border-neon-green/20 rounded-lg text-xs hover:bg-dark-400 transition-colors whitespace-nowrap"
+                        >
+                          <span>{cmd.icon}</span>
+                          <span>{cmd.text.split(' ')[0]}</span>
+                        </button>
+                      ))}
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <textarea
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                          placeholder={`Ask anything about cybersecurity in ${languageOptions[selectedLanguage].name}...`}
+                          className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-neon-green resize-none h-20"
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <button
+                        onClick={sendMessage}
+                        disabled={isLoading || !input.trim()}
+                        className="px-6 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-neon-green/20 flex items-center justify-center"
+                      >
+                        <span className="text-lg">⚡</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-neon-green/70 text-sm mb-3">EXAMPLE QUERIES:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {exampleQueries[selectedLanguage]?.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setInput(item.query)}
-                      className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors"
-                      title={item.desc}
-                    >
-                      {item.query.length > 30 ? item.query.substring(0, 30) + "..." : item.query}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm h-[500px] flex flex-col">
-              <div className="flex-1 overflow-y-auto terminal-scrollbar p-4 space-y-4">
-                {messages.length === 0 && (
-                  <div className="text-center text-neon-green/50 h-full flex items-center justify-center">
-                    <div>
-                      <div className="text-4xl mb-4">🌐</div>
-                      <p className="text-lg mb-2 glow">ShadowGPT v5.0 Multilingual</p>
-                      <p className="text-sm">Speak to me in English, French, Spanish, Russian, Pidgin, or Chinese!</p>
-                      <p className="text-xs mt-4 text-neon-green/40">
-                        I understand 6 languages and can help with all cybersecurity topics
-                      </p>
-                    </div>
-                  </div>
-                )}
-                
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`p-3 rounded-lg border ${
-                      message.role === 'user' 
-                        ? 'bg-neon-green/10 border-neon-green/30 ml-8' 
-                        : 'bg-dark-300/50 border-neon-purple/30 mr-8'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className={`text-xs font-bold ${
-                          message.role === 'user' ? 'text-neon-blue' : 'text-neon-purple'
-                        }`}>
-                          {message.role === 'user' ? 'YOU' : 'SHADOWGPT AI'}
-                        </span>
-                        {message.language && message.language !== 'en' && (
-                          <span className="text-xs bg-neon-green/20 text-neon-green px-1.5 py-0.5 rounded">
-                            {languageNames[message.language]?.split(' ')[1] || message.language}
-                          </span>
-                        )}
+                <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6 h-full">
+                  <h3 className="text-lg font-bold text-neon-green mb-4">🚀 Features</h3>
+                  <div className="space-y-3">
+                    {features.map((feature, index) => (
+                      <div key={index} className="p-3 bg-dark-300/50 rounded-lg border border-neon-green/10 hover:border-neon-green/30 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl">{feature.icon}</div>
+                          <div>
+                            <h4 className="font-bold text-neon-green">{feature.title}</h4>
+                            <p className="text-xs text-neon-green/60">{feature.desc}</p>
+                          </div>
+                        </div>
                       </div>
-                      {message.timestamp && (
-                        <span className="text-xs text-neon-green/50">{message.timestamp}</span>
-                      )}
-                    </div>
-                    {renderMessageContent(message)}
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="p-3 rounded-lg border border-neon-purple/30 bg-dark-300/50 mr-8">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
-                        <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                        <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                      </div>
-                      <span className="text-xs text-neon-purple">Multilingual AI processing...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              <div className="border-t border-neon-green/20 p-4">
-                <div className="flex space-x-3">
-                  <div className="flex-1">
-                    <textarea
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder={`Ask in ${languageNames[selectedLanguage]?.split(' ')[1] || 'any language'}...`}
-                      className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green resize-none"
-                      rows="2"
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <button
-                    onClick={sendMessage}
-                    disabled={isLoading || !input.trim()}
-                    className="px-6 py-2 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    SEND
-                  </button>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <div className="text-xs text-neon-green/50">
-                    Press Enter to send • I understand 6 languages
-                  </div>
-                  <div className="flex space-x-1">
-                    {Object.entries(languageNames).map(([code, name]) => (
-                      <button
-                        key={code}
-                        onClick={() => setSelectedLanguage(code)}
-                        className={`text-xs px-2 py-1 rounded transition-colors ${
-                          selectedLanguage === code 
-                            ? 'bg-neon-green text-dark-200' 
-                            : 'bg-dark-300 text-neon-green/60 hover:text-neon-green'
-                        }`}
-                        title={name}
-                      >
-                        {name.split(' ')[0]}
-                      </button>
                     ))}
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-dark-300 rounded-lg">
+                    <h4 className="text-sm font-bold text-neon-green mb-2">📊 Stats</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="text-center p-2 bg-dark-400 rounded">
+                        <div className="text-xl font-bold text-neon-green">6</div>
+                        <div className="text-xs text-neon-green/60">Languages</div>
+                      </div>
+                      <div className="text-center p-2 bg-dark-400 rounded">
+                        <div className="text-xl font-bold text-neon-green">50+</div>
+                        <div className="text-xs text-neon-green/60">Tools</div>
+                      </div>
+                      <div className="text-center p-2 bg-dark-400 rounded">
+                        <div className="text-xl font-bold text-neon-green">∞</div>
+                        <div className="text-xs text-neon-green/60">Possibilities</div>
+                      </div>
+                      <div className="text-center p-2 bg-dark-400 rounded">
+                        <div className="text-xl font-bold text-neon-green">v6.0</div>
+                        <div className="text-xs text-neon-green/60">Version</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -479,89 +438,202 @@ export default function Home() {
           </>
         )}
 
-        {activeTab === 'languages' && (
-          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">🌐 Multilingual Support</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(languageNames).map(([code, name]) => (
-                <div key={code} className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
-                  <div className="text-2xl mb-2">{name.split(' ')[0]}</div>
-                  <h4 className="font-bold text-neon-green mb-2">{name}</h4>
-                  <div className="text-xs text-neon-green/70 mb-3">
-                    {code === 'en' && 'Primary language with full capabilities'}
-                    {code === 'fr' && 'Complete French translation available'}
-                    {code === 'es' && 'Complete Spanish translation available'}
-                    {code === 'ru' && 'Basic Russian support available'}
-                    {code === 'pcm' && 'Pidgin English/Nigerian support'}
-                    {code === 'zh' && 'Basic Chinese (Mandarin) support'}
-                  </div>
-                  <div className="text-xs space-y-1">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
-                      <span>Cybersecurity basics</span>
+        {activeTab === 'tools' && (
+          <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-neon-green mb-2">🛠️ Security Tools Dashboard</h2>
+                <p className="text-neon-green/60">Professional security tools and utilities</p>
+              </div>
+              <button className="px-4 py-2 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90 transition-colors">
+                + Add Custom Tool
+              </button>
+            </div>
+            <ToolsDashboard />
+          </div>
+        )}
+
+        {activeTab === 'terminal' && (
+          <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-neon-green mb-2">💻 Advanced Terminal</h2>
+                <p className="text-neon-green/60">Interactive command-line interface</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-neon-green rounded-full animate-pulse"></div>
+                <span className="text-sm text-neon-green">Connected</span>
+              </div>
+            </div>
+            <Terminal />
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-3 bg-dark-300 rounded-lg">
+                <div className="text-xs text-neon-green/60 mb-1">Quick Commands</div>
+                <div className="text-sm font-mono">help, scan, exploit</div>
+              </div>
+              <div className="p-3 bg-dark-300 rounded-lg">
+                <div className="text-xs text-neon-green/60 mb-1">Status</div>
+                <div className="text-sm text-neon-green">Operational</div>
+              </div>
+              <div className="p-3 bg-dark-300 rounded-lg">
+                <div className="text-xs text-neon-green/60 mb-1">Users</div>
+                <div className="text-sm">bedusec (admin)</div>
+              </div>
+              <div className="p-3 bg-dark-300 rounded-lg">
+                <div className="text-xs text-neon-green/60 mb-1">Uptime</div>
+                <div className="text-sm">100%</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'labs' && (
+          <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+            <h2 className="text-2xl font-bold text-neon-green mb-6">🧪 Virtual Labs</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {['Web Security Lab', 'Network Pentest Lab', 'Cryptography Lab', 'Forensics Lab', 'Mobile Security Lab', 'IoT Security Lab'].map((lab, index) => (
+                <div key={index} className="bg-dark-300 border border-neon-green/20 rounded-xl p-6 hover:border-neon-green transition-all duration-300 hover:scale-[1.02]">
+                  <div className="text-3xl mb-4">🖥️</div>
+                  <h3 className="font-bold text-neon-green mb-2">{lab}</h3>
+                  <p className="text-sm text-neon-green/60 mb-4">Practice your skills in a safe environment</p>
+                  <button className="w-full px-4 py-2 bg-dark-400 border border-neon-green/30 rounded-lg text-neon-green hover:bg-dark-500 transition-colors">
+                    Launch Lab
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'ctf' && (
+          <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+            <h2 className="text-2xl font-bold text-neon-green mb-6">🏴‍☠️ CTF Challenges</h2>
+            <div className="space-y-4">
+              {[
+                { name: 'Beginner: Web Basics', difficulty: 'Easy', points: 100, solved: true },
+                { name: 'Intermediate: Crypto Challenge', difficulty: 'Medium', points: 250, solved: false },
+                { name: 'Advanced: Network Exploitation', difficulty: 'Hard', points: 500, solved: false },
+                { name: 'Expert: Zero-Day Simulation', difficulty: 'Expert', points: 1000, solved: false }
+              ].map((challenge, index) => (
+                <div key={index} className="p-4 bg-dark-300 rounded-lg border border-neon-green/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-bold text-neon-green">{challenge.name}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          challenge.difficulty === 'Easy' ? 'bg-neon-green/20 text-neon-green' :
+                          challenge.difficulty === 'Medium' ? 'bg-neon-yellow/20 text-neon-yellow' :
+                          challenge.difficulty === 'Hard' ? 'bg-neon-red/20 text-neon-red' :
+                          'bg-neon-purple/20 text-neon-purple'
+                        }`}>
+                          {challenge.difficulty}
+                        </span>
+                        <span className="text-xs text-neon-green/60">{challenge.points} points</span>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
-                      <span>Tool generation</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
-                      <span>Technical explanations</span>
-                    </div>
+                    <button className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                      challenge.solved
+                        ? 'bg-neon-green/20 text-neon-green'
+                        : 'bg-neon-green text-dark-200 hover:bg-neon-green/90'
+                    }`}>
+                      {challenge.solved ? '✅ Solved' : 'Start Challenge'}
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'team' && (
+          <div className="cyber-border rounded-xl bg-dark-200/50 backdrop-blur-sm p-6">
+            <h2 className="text-2xl font-bold text-neon-green mb-6">👥 Team Collaboration</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="p-4 bg-dark-300 rounded-lg">
+                  <h3 className="font-bold text-neon-green mb-3">Team Members</h3>
+                  <div className="space-y-2">
+                    {['bedusec (Admin)', 'shadow_ai (AI)', 'red_team_01', 'blue_team_01'].map((member, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 hover:bg-dark-400 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-neon-green rounded-full"></div>
+                          <span>{member}</span>
+                        </div>
+                        <span className="text-xs text-neon-green/60">Online</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-4 bg-dark-300 rounded-lg">
+                  <h3 className="font-bold text-neon-green mb-3">Recent Activity</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="text-neon-green/70">bedusec started a port scan</div>
+                    <div className="text-neon-green/70">shadow_ai generated exploit code</div>
+                    <div className="text-neon-green/70">CTF challenge completed</div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 bg-dark-300 rounded-lg">
+                <h3 className="font-bold text-neon-green mb-3">Team Chat</h3>
+                <div className="h-64 overflow-y-auto mb-3 p-3 bg-dark-400 rounded">
+                  <div className="space-y-3">
+                    <div className="text-right">
+                      <div className="inline-block bg-neon-green/20 rounded-lg p-2 max-w-xs">
+                        <div className="text-xs text-neon-green/60">bedusec</div>
+                        <div>Starting network reconnaissance</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="inline-block bg-dark-400 border border-neon-green/30 rounded-lg p-2 max-w-xs">
+                        <div className="text-xs text-neon-green/60">shadow_ai</div>
+                        <div>I can help with that. Want me to generate a scanner?</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder="Type a message..."
+                    className="flex-1 bg-dark-400 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green"
+                  />
+                  <button className="px-4 py-2 bg-neon-green text-dark-200 rounded-lg font-bold hover:bg-neon-green/90">
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <footer className="border-t border-neon-green/30 mt-8 py-6">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                <div className="w-2 h-2 bg-neon-green rounded-full glow"></div>
+                <h3 className="text-lg font-bold">ShadowGPT v6.0</h3>
+              </div>
+              <p className="text-xs text-neon-green/40">Ultimate Pentesting AI Platform</p>
+            </div>
             
-            <div className="mt-6 p-4 bg-dark-300/50 border border-neon-purple/30 rounded-lg">
-              <h4 className="text-neon-purple font-bold mb-2">💡 Language Detection Features</h4>
-              <ul className="text-sm space-y-2 text-neon-green/80">
-                <li>• Automatic language detection based on your input</li>
-                <li>• Context-aware responses in detected language</li>
-                <li>• Multilingual tool generation</li>
-                <li>• Language switching without losing context</li>
-                <li>• Cultural context consideration</li>
-              </ul>
+            <div className="text-center">
+              <p className="text-sm text-neon-green/60 mb-1">Created with ❤️ by <span className="text-neon-green font-semibold">bedusec</span></p>
+              <p className="text-xs text-neon-green/40">For educational and authorized testing only</p>
             </div>
-          </div>
-        )}
-
-        {activeTab === 'analysis' && (
-          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">🤖 Advanced AI Analysis</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
-                <h4 className="text-neon-green font-bold mb-3">Multilingual Features</h4>
-                <ul className="text-sm space-y-2 text-neon-green/80">
-                  <li>• Real-time language detection and switching</li>
-                  <li>• Comprehensive knowledge in 6 languages</li>
-                  <li>• Cultural context awareness</li>
-                  <li>• Language-specific tool generation</li>
-                  <li>• Automatic translation fallback</li>
-                  <li>• Language preference learning</li>
-                </ul>
-              </div>
-              <div className="bg-dark-300 border border-neon-purple/20 rounded-lg p-4">
-                <h4 className="text-neon-purple font-bold mb-3">Technical Capabilities</h4>
-                <ul className="text-sm space-y-2 text-neon-purple/80">
-                  <li>• Advanced query analysis and categorization</li>
-                  <li>• Complexity assessment (Beginner/Intermediate/Advanced)</li>
-                  <li>• Context-aware response generation</li>
-                  <li>• Multi-domain cybersecurity knowledge</li>
-                  <li>• Professional tool generation</li>
-                  <li>• Real-time conversation analysis</li>
-                </ul>
+            
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-neon-green/60">v6.0.0</span>
+              <div className="flex gap-1">
+                <div className="w-1 h-1 bg-neon-green rounded-full"></div>
+                <div className="w-1 h-1 bg-neon-green rounded-full"></div>
+                <div className="w-1 h-1 bg-neon-green rounded-full"></div>
               </div>
             </div>
           </div>
-        )}
-
-        <footer className="mt-6 text-center text-neon-green/40 text-xs">
-          <p>⚠️ ShadowGPT v5.0 Multilingual AI - For educational purposes only</p>
-          <p className="mt-1">Enhanced by <span className="text-neon-green">bedusec</span> • Supports 6 languages • Use responsibly and ethically</p>
-          <p className="mt-2 text-neon-green/30">🇺🇸 🇫🇷 🇪🇸 🇷🇺 🇳🇬 🇨🇳</p>
-        </footer>
-      </div>
+        </div>
+      </footer>
     </div>
   );
 }

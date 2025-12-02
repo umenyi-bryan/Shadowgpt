@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { MultilingualAIEngine } from '../../utils/MultilingualAIEngine.js';
+import { UltimateAIEngine } from '../../utils/UltimateAIEngine.js';
 
 export async function POST(request) {
   try {
@@ -9,10 +9,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No message provided' }, { status: 400 });
     }
 
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    const aiEngine = new MultilingualAIEngine();
+    const aiEngine = new UltimateAIEngine();
     const analysis = aiEngine.analyzeQuery(message);
     const response = aiEngine.generateResponse(message, analysis);
 
@@ -23,9 +22,7 @@ export async function POST(request) {
       analysis: {
         category: analysis.category,
         complexity: analysis.complexity,
-        topics: analysis.topics,
-        requiresTool: analysis.requiresTool,
-        requiresCode: analysis.requiresCode
+        topics: analysis.topics
       }
     });
     

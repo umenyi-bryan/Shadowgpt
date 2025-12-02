@@ -12,54 +12,64 @@
 
 body {
   font-family: 'JetBrains Mono', monospace;
-  background: #0f0f0f;
+  background: #0a0a0a;
   overflow-x: hidden;
 }
 
-.terminal-scrollbar::-webkit-scrollbar {
-  width: 8px;
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.terminal-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #1a1a1a;
 }
 
-.terminal-scrollbar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #00ff41;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
-.cyber-border {
-  border: 1px solid #00ff41;
-  box-shadow: 0 0 10px #00ff41, inset 0 0 10px #00ff41;
+::-webkit-scrollbar-thumb:hover {
+  background: #00cc33;
 }
 
 .hacker-text {
   text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
 }
 
-.glow {
-  animation: glow 2s ease-in-out infinite alternate;
+.cyber-border {
+  border: 1px solid #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
-@keyframes matrix {
-  0% { transform: translateY(-100%); opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
+.terminal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #00ff41 #1a1a1a;
 }
 
-.matrix-rain {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
+  }
+  to {
+    text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+  }
 }
 
-.matrix-char {
-  position: absolute;
-  color: #00ff41;
-  font-size: 14px;
-  animation: matrix linear infinite;
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }

@@ -21,7 +21,8 @@ export default function CodeBlock({ code, language = 'bash' }) {
       javascript: 'JavaScript',
       sql: 'SQL',
       html: 'HTML',
-      css: 'CSS'
+      css: 'CSS',
+      json: 'JSON'
     };
     return labels[language] || language;
   };

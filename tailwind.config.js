@@ -9,29 +9,31 @@ module.exports = {
     extend: {
       colors: {
         dark: {
-          100: '#1a1a1a',
-          200: '#0f0f0f',
-          300: '#2a2a2a',
+          100: '#0a0a0a',
+          200: '#111111',
+          300: '#1a1a1a',
         },
         neon: {
           green: '#00ff41',
           purple: '#bc13fe',
           blue: '#00ffff',
-          red: '#ff073a'
+          red: '#ff073a',
+          yellow: '#ffff00'
         }
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
-        'terminal-blink': 'blink 1s step-end infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
         glow: {
-          from: { textShadow: '0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41' },
-          to: { textShadow: '0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41' }
+          'from': { 'textShadow': '0 0 5px #00ff41, 0 0 10px #00ff41' },
+          'to': { 'textShadow': '0 0 10px #00ff41, 0 0 20px #00ff41' }
         },
-        blink: {
-          '0%, 100%': { opacity: 1 },
-          '50%': { opacity: 0 }
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' }
         }
       }
     },

@@ -16,7 +16,7 @@ export default function MatrixRain() {
 
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*';
     const charArray = chars.split('');
-    const fontSize = 14;
+    const fontSize = 12;
     const columns = canvas.width / fontSize;
     const drops = [];
 
@@ -25,11 +25,11 @@ export default function MatrixRain() {
     }
 
     function draw() {
-      ctx.fillStyle = 'rgba(15, 15, 15, 0.05)';
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.04)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       ctx.fillStyle = '#00ff41';
-      ctx.font = `${fontSize}px JetBrains Mono`;
+      ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
         const text = charArray[Math.floor(Math.random() * charArray.length)];
@@ -42,10 +42,18 @@ export default function MatrixRain() {
       }
     }
 
-    const interval = setInterval(draw, 33);
+    const interval = setInterval(draw, 35);
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
       clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
       document.body.removeChild(canvas);
     };
   }, []);

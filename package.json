@@ -1,7 +1,7 @@
 {
-  "name": "shadowgpt-multilingual",
-  "version": "5.0.0",
-  "description": "Ultimate Multilingual Pentesting AI by bedusec",
+  "name": "shadowgpt-ultimate",
+  "version": "6.0.0",
+  "description": "Ultimate Multilingual Pentesting AI Platform by bedusec",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -28,7 +28,7 @@
     "cybersecurity",
     "ai",
     "multilingual",
-    "security-tools",
+    "security-platform",
     "bedusec"
   ],
   "author": "bedusec",

@@ -1,49 +1,119 @@
-# ShadowGPT 🛡️
+# 🛡️ ShadowGPT v6.0 - Ultimate Pentesting AI Platform
 
-**Advanced Pentesting AI Assistant**  
-*Created by bedusec*
+**Created by bedusec** - The most advanced multilingual pentesting AI assistant
 
-## Overview
+## 🌟 Features
 
-ShadowGPT is a powerful, sleek AI assistant designed for penetration testing and ethical hacking discussions. Featuring a terrifyingly cool cyberpunk interface with real-time matrix rain effects.
+### 🚀 Core Features
+- **Multilingual AI** - Speaks 6 languages (English, French, Spanish, Russian, Pidgin English, Chinese)
+- **Advanced Tool Generation** - Professional security tools with one command
+- **Interactive Terminal** - Real-time command execution
+- **Live CTF Challenges** - Capture The Flag exercises
+- **Virtual Labs** - Safe environment for practice
+- **Team Collaboration** - Multi-user pentesting sessions
 
-## Features
+### 🤖 AI Capabilities
+- Smart query analysis and categorization
+- Context-aware responses in 6 languages
+- Real-time vulnerability intelligence
+- Automated exploit generation
+- Comprehensive cybersecurity knowledge
 
-- 🤖 AI-powered pentesting assistance
-- 🎨 Sleek cyberpunk UI with matrix rain
-- ⚡ Real-time responses
-- 🔒 Educational content only
-- 📱 Responsive design
-- 🎯 Quick command buttons
+### 🛠️ Security Tools
+- Port scanners with advanced features
+- Vulnerability assessment tools
+- Hash cracking utilities
+- Network monitoring scripts
+- Web application crawlers
+- Password strength analyzers
 
-## Tech Stack
-
-- Next.js 14
-- React 18
-- Tailwind CSS
-- Vercel deployment
-
-## Local Development
+## 🚀 Quick Start
 
 ```bash
+# Clone repository
+git clone https://github.com/your-username/shadowgpt.git
+
+# Install dependencies
+cd shadowgpt
 npm install
+
+# Run development server
 npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Deployment
+🌐 Live Demo
 
-1. Push to GitHub
-2. Connect repository to Vercel
-3. Deploy automatically
+Access the live version at: https://shadowgpt.vercel.app
 
-Ethical Usage
+📱 Interface
 
-⚠️ Important: This tool is for educational purposes and authorized testing only. Always ensure you have proper authorization before conducting any security testing.
+· Chat Tab - AI assistant with multilingual support
+· Tools Tab - Professional security tools dashboard
+· Terminal Tab - Interactive command-line interface
+· Labs Tab - Virtual pentesting environments
+· CTF Tab - Capture The Flag challenges
+· Team Tab - Collaboration features
 
-Creator
+🔐 Ethical Usage
+
+⚠️ IMPORTANT: This tool is for educational purposes and authorized testing only.
+
+· Always obtain proper authorization before testing
+· Follow ethical guidelines and laws
+· Use only on systems you own or have permission to test
+· Respect privacy and confidentiality
+
+🛡️ Security Features
+
+· Built-in ethical guidelines enforcement
+· Authorization verification reminders
+· Activity logging for accountability
+· Educational focus enforcement
+· Responsible disclosure guidance
+
+📊 Stats
+
+· 6 Languages supported
+· 50+ Security tools available
+· Real-time AI processing
+· Professional-grade output
+· Enterprise-ready features
+
+💻 Technology Stack
+
+· Frontend: Next.js 14, React 18, Tailwind CSS
+· AI Engine: Custom multilingual AI system
+· UI Components: Custom cyberpunk design
+· Deployment: Vercel optimized
+
+🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+📄 License
+
+MIT License - See LICENSE file for details
+
+👤 Author
 
 bedusec - Security Researcher & Developer
 
+⭐ Support
+
+If you find this project useful, please give it a star on GitHub!
+
 ---
 
-Use responsibly and stay ethical!
+Remember: With great power comes great responsibility. Always hack ethically! 🔐
