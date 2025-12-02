@@ -2,74 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 10, 10, 10;
 }
 
 body {
-  font-family: 'JetBrains Mono', monospace;
-  background: #0a0a0a;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
   overflow-x: hidden;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
+/* Custom scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #00ff41 #111111;
 }
 
-::-webkit-scrollbar-track {
-  background: #1a1a1a;
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-::-webkit-scrollbar-thumb {
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #111111;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
   background: #00ff41;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #00cc33;
 }
 
-.hacker-text {
-  text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
+/* Matrix text effect */
+.matrix-text {
+  text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41;
 }
 
-.cyber-border {
-  border: 1px solid #00ff41;
+/* Terminal cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+/* Glowing border */
+.glow-border {
   box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
-.terminal-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #00ff41 #1a1a1a;
+.glow-border:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
 }
 
-@keyframes glow {
-  from {
-    text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
-  }
-  to {
-    text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
-  }
+/* Smooth transitions */
+* {
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* Selection color */
+::selection {
+  background-color: rgba(0, 255, 65, 0.3);
+  color: #00ff41;
 }
