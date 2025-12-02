@@ -9,6 +9,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
   const [analysisInfo, setAnalysisInfo] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -18,6 +19,15 @@ export default function Home() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const languageNames = {
+    en: '🇺🇸 English',
+    fr: '🇫🇷 Français',
+    es: '🇪🇸 Español',
+    ru: '🇷🇺 Русский',
+    pcm: '🇳🇬 Pidgin English',
+    zh: '🇨🇳 中文'
+  };
 
   const extractCodeBlocks = (content) => {
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -101,12 +111,16 @@ export default function Home() {
           role: 'assistant', 
           content: data.response,
           type: data.type || 'text',
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
+          language: data.language || 'en'
         };
         setMessages(prev => [...prev, assistantMessage]);
         
         if (data.analysis) {
-          setAnalysisInfo(data.analysis);
+          setAnalysisInfo({
+            ...data.analysis,
+            language: data.language
+          });
         }
       }
     } catch (error) {
@@ -130,29 +144,102 @@ export default function Home() {
     }
   };
 
-  const quickCommands = [
-    "Create port scanner tool",
-    "Explain SQL injection",
-    "Generate vulnerability scanner",
-    "How to use nmap",
-    "Make hash cracker tool",
-    "What are OWASP Top 10?",
-    "Web security basics",
-    "Network scanning techniques"
-  ];
+  const quickCommands = {
+    en: [
+      "Create port scanner tool",
+      "Explain SQL injection",
+      "Generate vulnerability scanner",
+      "How to use nmap",
+      "Web security basics",
+      "What is cybersecurity?"
+    ],
+    fr: [
+      "Créer un scanner de ports",
+      "Expliquer l'injection SQL",
+      "Générer un scanner de vulnérabilités",
+      "Comment utiliser nmap",
+      "Bases de sécurité web",
+      "Qu'est-ce que la cybersécurité?"
+    ],
+    es: [
+      "Crear escáner de puertos",
+      "Explicar inyección SQL",
+      "Generar escáner de vulnerabilidades",
+      "Cómo usar nmap",
+      "Conceptos básicos de seguridad web",
+      "¿Qué es la ciberseguridad?"
+    ],
+    ru: [
+      "Создать сканер портов",
+      "Объяснить SQL-инъекции",
+      "Создать сканер уязвимостей",
+      "Как использовать nmap",
+      "Основы веб-безопасности",
+      "Что такое кибербезопасность?"
+    ],
+    pcm: [
+      "Make port scanner tool",
+      "Explain SQL injection",
+      "Create security checker",
+      "How to use network scanner",
+      "Web safety basics",
+      "Wetin be cybersecurity?"
+    ],
+    zh: [
+      "创建端口扫描工具",
+      "解释SQL注入",
+      "生成漏洞扫描器",
+      "如何使用nmap",
+      "Web安全基础",
+      "什么是网络安全？"
+    ]
+  };
 
-  const advancedTools = [
-    { name: 'Port Scanner', command: 'Create port scanner tool', lang: 'bash' },
-    { name: 'Vulnerability Scanner', command: 'Generate vulnerability scanner', lang: 'bash' },
-    { name: 'Hash Cracker', command: 'Make hash cracker tool', lang: 'bash' }
-  ];
+  const exampleQueries = {
+    en: [
+      { query: "Hello! Can you help me with cybersecurity?", desc: "Casual greeting" },
+      { query: "Create a port scanner in Python", desc: "Tool creation" },
+      { query: "Explain advanced network security", desc: "Technical explanation" },
+      { query: "How to prevent phishing attacks?", desc: "Security guidance" }
+    ],
+    fr: [
+      { query: "Bonjour! Pouvez-vous m'aider avec la cybersécurité?", desc: "Salutation" },
+      { query: "Créer un scanner de ports en Python", desc: "Création d'outil" },
+      { query: "Expliquer la sécurité réseau avancée", desc: "Explication technique" },
+      { query: "Comment prévenir les attaques de phishing?", desc: "Conseils de sécurité" }
+    ],
+    es: [
+      { query: "¡Hola! ¿Puedes ayudarme con ciberseguridad?", desc: "Saludo" },
+      { query: "Crear un escáner de puertos en Python", desc: "Creación de herramienta" },
+      { query: "Explicar seguridad de red avanzada", desc: "Explicación técnica" },
+      { query: "¿Cómo prevenir ataques de phishing?", desc: "Consejos de seguridad" }
+    ],
+    ru: [
+      { query: "Привет! Можете помочь с кибербезопасностью?", desc: "Приветствие" },
+      { query: "Создать сканер портов на Python", desc: "Создание инструмента" },
+      { query: "Объяснить продвинутую сетевую безопасность", desc: "Техническое объяснение" },
+      { query: "Как предотвратить фишинговые атаки?", desc: "Советы по безопасности" }
+    ],
+    pcm: [
+      { query: "How you dey! You fit help me for cybersecurity?", desc: "Greeting" },
+      { query: "Make port scanner for Python", desc: "Make tool" },
+      { query: "Explain network security well-well", desc: "Explain matter" },
+      { query: "How to stop fake message attacks?", desc: "Security advice" }
+    ],
+    zh: [
+      { query: "你好！你能帮我解决网络安全问题吗？", desc: "问候" },
+      { query: "用Python创建端口扫描器", desc: "工具创建" },
+      { query: "解释高级网络安全", desc: "技术解释" },
+      { query: "如何防止钓鱼攻击？", desc: "安全建议" }
+    ]
+  };
 
   const pentestingPhases = [
-    { phase: "Reconnaissance", icon: "🔍", description: "Information gathering" },
+    { phase: "Recon", icon: "🔍", description: "Information gathering" },
     { phase: "Scanning", icon: "📡", description: "Vulnerability detection" },
-    { phase: "Exploitation", icon: "⚡", description: "Gaining access" },
-    { phase: "Post-Exploit", icon: "🔐", description: "Maintaining access" },
-    { phase: "Reporting", icon: "📊", description: "Documentation" }
+    { phase: "Access", icon: "⚡", description: "Gaining entry" },
+    { phase: "Maintain", icon: "🔐", description: "Persistence" },
+    { phase: "Cover", icon: "🕵️", description: "Clean traces" }
   ];
 
   return (
@@ -164,31 +251,46 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-3 h-3 bg-neon-green rounded-full glow"></div>
-              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v4.0</h1>
-              <span className="text-xs bg-neon-purple/20 text-neon-purple px-2 py-1 rounded">ADVANCED AI</span>
+              <h1 className="text-2xl font-bold hacker-text">ShadowGPT v5.0</h1>
+              <span className="text-xs bg-neon-purple/20 text-neon-purple px-2 py-1 rounded">MULTILINGUAL AI</span>
             </div>
             <div className="text-sm text-neon-green/70">
               Enhanced by <span className="text-neon-green glow">bedusec</span>
             </div>
           </div>
           <p className="text-neon-green/60 text-sm mt-2">
-            Advanced AI Pentesting Assistant - Smart Analysis & Tool Generation
+            Advanced Multilingual Pentesting AI - Speak 6 Languages!
           </p>
           
-          <div className="flex space-x-1 mt-4">
-            {['chat', 'analysis'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-t-lg text-sm font-medium transition-colors ${
-                  activeTab === tab 
-                    ? 'bg-dark-300 border-t border-l border-r border-neon-green text-neon-green' 
-                    : 'bg-dark-100 text-neon-green/60 hover:text-neon-green'
-                }`}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 gap-3">
+            <div className="flex space-x-1">
+              {['chat', 'languages', 'analysis'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-t-lg text-sm font-medium transition-colors ${
+                    activeTab === tab 
+                      ? 'bg-dark-300 border-t border-l border-r border-neon-green text-neon-green' 
+                      : 'bg-dark-100 text-neon-green/60 hover:text-neon-green'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-neon-green/70">Language:</span>
+              <select 
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="bg-dark-300 border border-neon-green/30 rounded px-2 py-1 text-xs text-neon-green"
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
+                {Object.entries(languageNames).map(([code, name]) => (
+                  <option key={code} value={code}>{name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </header>
@@ -198,10 +300,18 @@ export default function Home() {
           <div className="mb-4 p-3 bg-dark-300 border border-neon-purple/30 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs text-neon-purple font-bold">AI ANALYSIS</span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-neon-purple font-bold">AI ANALYSIS</span>
+                  <span className="text-xs bg-neon-green/20 text-neon-green px-2 py-0.5 rounded">
+                    {languageNames[analysisInfo.language] || 'English'}
+                  </span>
+                </div>
                 <div className="text-xs text-neon-green/70 mt-1">
                   Category: <span className="text-neon-green">{analysisInfo.category}</span> • 
-                  Complexity: <span className="text-neon-green">{analysisInfo.complexity}</span>
+                  Level: <span className="text-neon-green">{analysisInfo.complexity}</span>
+                  {analysisInfo.topics?.length > 0 && (
+                    <> • Topics: <span className="text-neon-green">{analysisInfo.topics.join(', ')}</span></>
+                  )}
                 </div>
               </div>
               <button 
@@ -233,7 +343,7 @@ export default function Home() {
               <div>
                 <h3 className="text-neon-green/70 text-sm mb-3">QUICK COMMANDS:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {quickCommands.map((cmd, index) => (
+                  {quickCommands[selectedLanguage]?.map((cmd, index) => (
                     <button
                       key={index}
                       onClick={() => setInput(cmd)}
@@ -246,15 +356,16 @@ export default function Home() {
               </div>
               
               <div>
-                <h3 className="text-neon-green/70 text-sm mb-3">TOOLS:</h3>
+                <h3 className="text-neon-green/70 text-sm mb-3">EXAMPLE QUERIES:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {advancedTools.map((tool, index) => (
+                  {exampleQueries[selectedLanguage]?.map((item, index) => (
                     <button
                       key={index}
-                      onClick={() => setInput(tool.command)}
+                      onClick={() => setInput(item.query)}
                       className="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs hover:bg-neon-purple/20 transition-colors"
+                      title={item.desc}
                     >
-                      {tool.name} ({tool.lang})
+                      {item.query.length > 30 ? item.query.substring(0, 30) + "..." : item.query}
                     </button>
                   ))}
                 </div>
@@ -266,11 +377,11 @@ export default function Home() {
                 {messages.length === 0 && (
                   <div className="text-center text-neon-green/50 h-full flex items-center justify-center">
                     <div>
-                      <div className="text-4xl mb-4">🛡️</div>
-                      <p className="text-lg mb-2 glow">ShadowGPT v4.0 Active</p>
-                      <p className="text-sm">Advanced AI Pentesting Assistant</p>
+                      <div className="text-4xl mb-4">🌐</div>
+                      <p className="text-lg mb-2 glow">ShadowGPT v5.0 Multilingual</p>
+                      <p className="text-sm">Speak to me in English, French, Spanish, Russian, Pidgin, or Chinese!</p>
                       <p className="text-xs mt-4 text-neon-green/40">
-                        Ask questions, create tools, or explore cybersecurity
+                        I understand 6 languages and can help with all cybersecurity topics
                       </p>
                     </div>
                   </div>
@@ -286,11 +397,18 @@ export default function Home() {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs font-bold ${
-                        message.role === 'user' ? 'text-neon-blue' : 'text-neon-purple'
-                      }`}>
-                        {message.role === 'user' ? 'YOU' : 'SHADOWGPT AI'}
-                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className={`text-xs font-bold ${
+                          message.role === 'user' ? 'text-neon-blue' : 'text-neon-purple'
+                        }`}>
+                          {message.role === 'user' ? 'YOU' : 'SHADOWGPT AI'}
+                        </span>
+                        {message.language && message.language !== 'en' && (
+                          <span className="text-xs bg-neon-green/20 text-neon-green px-1.5 py-0.5 rounded">
+                            {languageNames[message.language]?.split(' ')[1] || message.language}
+                          </span>
+                        )}
+                      </div>
                       {message.timestamp && (
                         <span className="text-xs text-neon-green/50">{message.timestamp}</span>
                       )}
@@ -307,7 +425,7 @@ export default function Home() {
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                       </div>
-                      <span className="text-xs text-neon-purple">AI processing...</span>
+                      <span className="text-xs text-neon-purple">Multilingual AI processing...</span>
                     </div>
                   </div>
                 )}
@@ -321,7 +439,7 @@ export default function Home() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask cybersecurity questions or create tools..."
+                      placeholder={`Ask in ${languageNames[selectedLanguage]?.split(' ')[1] || 'any language'}...`}
                       className="w-full bg-dark-300 border border-neon-green/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neon-green resize-none"
                       rows="2"
                       disabled={isLoading}
@@ -335,36 +453,103 @@ export default function Home() {
                     SEND
                   </button>
                 </div>
-                <div className="text-xs text-neon-green/50 mt-2 text-center">
-                  Press Enter to send • Advanced AI features active
+                <div className="flex justify-between items-center mt-2">
+                  <div className="text-xs text-neon-green/50">
+                    Press Enter to send • I understand 6 languages
+                  </div>
+                  <div className="flex space-x-1">
+                    {Object.entries(languageNames).map(([code, name]) => (
+                      <button
+                        key={code}
+                        onClick={() => setSelectedLanguage(code)}
+                        className={`text-xs px-2 py-1 rounded transition-colors ${
+                          selectedLanguage === code 
+                            ? 'bg-neon-green text-dark-200' 
+                            : 'bg-dark-300 text-neon-green/60 hover:text-neon-green'
+                        }`}
+                        title={name}
+                      >
+                        {name.split(' ')[0]}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </>
         )}
 
+        {activeTab === 'languages' && (
+          <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
+            <h3 className="text-neon-green text-lg mb-4 glow">🌐 Multilingual Support</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(languageNames).map(([code, name]) => (
+                <div key={code} className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
+                  <div className="text-2xl mb-2">{name.split(' ')[0]}</div>
+                  <h4 className="font-bold text-neon-green mb-2">{name}</h4>
+                  <div className="text-xs text-neon-green/70 mb-3">
+                    {code === 'en' && 'Primary language with full capabilities'}
+                    {code === 'fr' && 'Complete French translation available'}
+                    {code === 'es' && 'Complete Spanish translation available'}
+                    {code === 'ru' && 'Basic Russian support available'}
+                    {code === 'pcm' && 'Pidgin English/Nigerian support'}
+                    {code === 'zh' && 'Basic Chinese (Mandarin) support'}
+                  </div>
+                  <div className="text-xs space-y-1">
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
+                      <span>Cybersecurity basics</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
+                      <span>Tool generation</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-neon-green rounded-full mr-2"></div>
+                      <span>Technical explanations</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 p-4 bg-dark-300/50 border border-neon-purple/30 rounded-lg">
+              <h4 className="text-neon-purple font-bold mb-2">💡 Language Detection Features</h4>
+              <ul className="text-sm space-y-2 text-neon-green/80">
+                <li>• Automatic language detection based on your input</li>
+                <li>• Context-aware responses in detected language</li>
+                <li>• Multilingual tool generation</li>
+                <li>• Language switching without losing context</li>
+                <li>• Cultural context consideration</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'analysis' && (
           <div className="cyber-border rounded-lg bg-dark-100/50 backdrop-blur-sm p-6">
-            <h3 className="text-neon-green text-lg mb-4 glow">AI Analysis Dashboard</h3>
+            <h3 className="text-neon-green text-lg mb-4 glow">🤖 Advanced AI Analysis</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-dark-300 border border-neon-green/20 rounded-lg p-4">
-                <h4 className="text-neon-green font-bold mb-3">Advanced Features</h4>
+                <h4 className="text-neon-green font-bold mb-3">Multilingual Features</h4>
                 <ul className="text-sm space-y-2 text-neon-green/80">
-                  <li>• Smart query categorization</li>
-                  <li>• Context-aware responses</li>
-                  <li>• Multi-domain knowledge</li>
-                  <li>• Advanced tool generation</li>
-                  <li>• Complexity assessment</li>
+                  <li>• Real-time language detection and switching</li>
+                  <li>• Comprehensive knowledge in 6 languages</li>
+                  <li>• Cultural context awareness</li>
+                  <li>• Language-specific tool generation</li>
+                  <li>• Automatic translation fallback</li>
+                  <li>• Language preference learning</li>
                 </ul>
               </div>
               <div className="bg-dark-300 border border-neon-purple/20 rounded-lg p-4">
-                <h4 className="text-neon-purple font-bold mb-3">Knowledge Domains</h4>
+                <h4 className="text-neon-purple font-bold mb-3">Technical Capabilities</h4>
                 <ul className="text-sm space-y-2 text-neon-purple/80">
-                  <li>• Pentesting methodologies</li>
-                  <li>• Vulnerability analysis</li>
-                  <li>• Network security</li>
-                  <li>• Web application security</li>
-                  <li>• Programming and scripting</li>
+                  <li>• Advanced query analysis and categorization</li>
+                  <li>• Complexity assessment (Beginner/Intermediate/Advanced)</li>
+                  <li>• Context-aware response generation</li>
+                  <li>• Multi-domain cybersecurity knowledge</li>
+                  <li>• Professional tool generation</li>
+                  <li>• Real-time conversation analysis</li>
                 </ul>
               </div>
             </div>
@@ -372,8 +557,9 @@ export default function Home() {
         )}
 
         <footer className="mt-6 text-center text-neon-green/40 text-xs">
-          <p>⚠️ Advanced AI Pentesting Assistant - For educational purposes only</p>
-          <p className="mt-1">Enhanced by <span className="text-neon-green">bedusec</span> • Use responsibly and ethically</p>
+          <p>⚠️ ShadowGPT v5.0 Multilingual AI - For educational purposes only</p>
+          <p className="mt-1">Enhanced by <span className="text-neon-green">bedusec</span> • Supports 6 languages • Use responsibly and ethically</p>
+          <p className="mt-2 text-neon-green/30">🇺🇸 🇫🇷 🇪🇸 🇷🇺 🇳🇬 🇨🇳</p>
         </footer>
       </div>
     </div>
