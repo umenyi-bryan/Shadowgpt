@@ -1,11 +1,11 @@
-import './globals.css'
 import { Inter } from 'next/font/google'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'ShadowGPT v6.0 - Ultimate Pentesting AI',
-  description: 'Advanced multilingual cybersecurity AI platform by bedusec',
+  title: 'ShadowGPT v6.0 - Hybrid AI Cybersecurity Assistant',
+  description: 'Online + Offline AI for cybersecurity. 100% free, no API keys needed.',
 }
 
 export default function RootLayout({ children }) {

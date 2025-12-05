@@ -12,6 +12,8 @@ module.exports = {
           100: '#0a0a0a',
           200: '#111111',
           300: '#1a1a1a',
+          400: '#222222',
+          500: '#2a2a2a',
         },
         neon: {
           green: '#00ff41',
@@ -25,6 +27,7 @@ module.exports = {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 6s ease-in-out infinite',
+        'bounce': 'bounce 1s infinite',
       },
       keyframes: {
         glow: {

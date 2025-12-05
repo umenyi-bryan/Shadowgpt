@@ -14,23 +14,10 @@ export default function CodeBlock({ code, language = 'bash' }) {
     }
   };
 
-  const getLanguageLabel = () => {
-    const labels = {
-      bash: 'Bash',
-      python: 'Python',
-      javascript: 'JavaScript',
-      sql: 'SQL',
-      html: 'HTML',
-      css: 'CSS',
-      json: 'JSON'
-    };
-    return labels[language] || language;
-  };
-
   return (
     <div className="relative bg-black border border-neon-green/30 rounded-lg mt-2">
       <div className="flex justify-between items-center px-4 py-2 bg-dark-300 border-b border-neon-green/20">
-        <span className="text-xs text-neon-green/70 font-mono">{getLanguageLabel()}</span>
+        <span className="text-xs text-neon-green/70 font-mono">{language}</span>
         <button
           onClick={copyToClipboard}
           className="text-xs bg-neon-green/20 text-neon-green px-2 py-1 rounded hover:bg-neon-green/30 transition-colors flex items-center space-x-1"

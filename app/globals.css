@@ -14,11 +14,6 @@ body {
 }
 
 /* Custom scrollbar */
-.scrollbar-thin {
-  scrollbar-width: thin;
-  scrollbar-color: #00ff41 #111111;
-}
-
 .scrollbar-thin::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -43,28 +38,23 @@ body {
   text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41;
 }
 
-/* Terminal cursor blink */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* Animations */
+@keyframes glow {
+  from { text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41; }
+  to { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
 }
 
-.cursor-blink {
-  animation: blink 1s infinite;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Glowing border */
-.glow-border {
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
-.glow-border:hover {
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-}
-
-/* Smooth transitions */
-* {
-  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 /* Selection color */
