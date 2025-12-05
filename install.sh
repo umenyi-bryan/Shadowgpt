@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# ShadowGPT v6.0 Installation Script
-# Created by bedusec
+# ShadowGPT v6.0 - Hybrid AI Installation
+# Online + Offline Intelligence • Web Search • 100% Free
 
 echo -e "\033[1;32m"
 echo "   _____ _                 _ _____ _____ _____ "
@@ -15,6 +15,9 @@ echo "                    |_|    v6.0 by bedusec      "
 echo -e "\033[0m"
 
 echo "🚀 Starting ShadowGPT v6.0 Installation..."
+echo "🌐 HYBRID AI: Online + Offline Intelligence"
+echo "🔍 WEB SEARCH: Real-time information fetching"
+echo "💰 100% FREE: No API keys • No costs • Unlimited"
 
 # Check for Node.js
 if ! command -v node &> /dev/null; then
@@ -34,33 +37,34 @@ fi
 
 echo "✅ npm version: $(npm --version)"
 
-# Create project directory
-echo "📁 Setting up project structure..."
-
 # Install dependencies
 echo "📦 Installing dependencies..."
 npm install
 
-# Create necessary directories
-mkdir -p app/components app/utils app/api
-
-echo "✅ Project structure created"
-
-# Set permissions
-chmod +x install.sh
-
 echo ""
-echo "🎉 Installation Complete!"
+echo "✅ Installation Complete!"
 echo ""
-echo "📋 Next Steps:"
-echo "1. Start the development server:"
-echo "   \033[1;32mnpm run dev\033[0m"
+echo "🎉 ShadowGPT v6.0 Hybrid AI is READY!"
 echo ""
-echo "2. Open your browser and navigate to:"
-echo "   \033[1;32mhttp://localhost:3000\033[0m"
+echo "✨ Hybrid Features:"
+echo "   • 🌐 Online Mode: Fetches real-time web information"
+echo "   • 💻 Offline Mode: Works without internet"
+echo "   • 🔍 Web Search: Built-in search interface"
+echo "   • 🔄 Smart Switching: Auto online/offline detection"
+echo "   • 🆓 Free APIs: DuckDuckGo, Wikipedia, Hacker News"
+echo "   • 🔐 Privacy: No tracking, minimal data collection"
 echo ""
-echo "3. For production build:"
-echo "   \033[1;32mnpm run build && npm start\033[0m"
+echo "🚀 To Start:"
+echo "   1. Run: npm run dev"
+echo "   2. Open: http://localhost:3000"
 echo ""
-echo "🔐 Remember to use ethically and responsibly!"
+echo "💬 Try These:"
+echo "   • 'Latest cybersecurity news' (Online)"
+echo "   • 'How to use Nmap' (Offline)"
+echo "   • 'What is blockchain?' (Hybrid)"
+echo "   • 'Search for Python security libraries' (Web Search)"
 echo ""
+echo "🔐 Remember: Use web access ethically and legally!"
+echo ""
+echo "🆓 Enjoy your FREE hybrid AI with web intelligence!"
+echo "   Online when available • Offline when not • Always works"

@@ -1,198 +1,249 @@
-# ShadowGPT v6.0 🛡️
+# ShadowGPT v6.0 🌐
 
-**Ultimate Multilingual Pentesting AI Platform**  
-*Created by bedusec*
+**Hybrid AI Cybersecurity Assistant - Online + Offline Intelligence**  
+*Real-time Web Search • Works Without Internet • 100% Free*
 
-![ShadowGPT Banner](https://img.shields.io/badge/ShadowGPT-v6.0-neon-green)
+![ShadowGPT Banner](https://img.shields.io/badge/ShadowGPT-Hybrid_AI-neon-green)
 ![License](https://img.shields.io/badge/License-MIT-neon-purple)
 ![Platform](https://img.shields.io/badge/Platform-Termux-neon-blue)
+![AI](https://img.shields.io/badge/AI-Online+Offline-red)
+![Cost](https://img.shields.io/badge/Cost-$0.00-success)
 
-## 🌟 Features
+## 🎯 **What Makes This Revolutionary?**
 
-### 🤖 **Advanced AI Engine**
-- Natural language understanding
-- Context-aware responses
-- Multi-language support (6 languages)
-- Real-time vulnerability intelligence
+### 🌐 **Hybrid Intelligence System**
+- **Online Mode**: Fetches real-time information from the web
+- **Offline Mode**: Works completely without internet
+- **Smart Switching**: Auto-detects and switches between modes
+- **Built-in Web Search**: Privacy-focused search interface
+- **Free APIs**: DuckDuckGo, Wikipedia, Hacker News - no keys needed
 
-### 🛠️ **Security Tools Dashboard**
-- 50+ security tools integration
-- Real-time status monitoring
-- One-click execution
-- Tool usage examples
+### 💰 **100% Free & Accessible**
+- **No API Keys Required**: Uses free public APIs
+- **No Internet Required**: Full offline capability
+- **No Usage Limits**: Unlimited queries
+- **No Hidden Costs**: Forever free
+- **No Tracking**: Privacy-focused design
 
-### 💻 **Interactive Terminal**
-- Command history
-- Auto-completion
-- Real-time output
-- Session management
+## 🚀 **Features**
 
-### 💬 **Smart Chat Interface**
-- Quick action buttons
-- Typing indicators
-- Message history
-- Code snippet sharing
+### 🤖 **Hybrid AI Engine**
+- **Real-time Information**: Fetches current data when online
+- **Local Intelligence**: Works offline with extensive knowledge
+- **Smart Analysis**: Determines when to use online vs offline
+- **Context-Aware**: Remembers conversations and preferences
+- **Multi-source**: Combines information from various free APIs
 
-### 🎨 **Cyberpunk UI**
-- Matrix rain background
-- Neon color scheme
-- Smooth animations
-- Responsive design
+### 🔍 **Web Search Interface**
+- **Built-in Browser**: Search within the app
+- **Multiple Sources**: DuckDuckGo, Wikipedia, Hacker News, Exploit-DB
+- **Privacy Focused**: No tracking, minimal data collection
+- **Quick Access**: One-click search for cybersecurity topics
+- **Results Integration**: Directly use search results in chat
 
-## 🚀 Quick Start
+### 🛠️ **Complete Cybersecurity Suite**
+- **50+ Security Tools** with real-time status
+- **Interactive Terminal** with command history
+- **Code Library** with web-integrated examples
+- **Vulnerability Database** with current CVE data
+- **CTF Challenge Solver** with step-by-step guides
 
-### Termux Installation
+### 💻 **Professional Interface**
+- Matrix rain background with cyberpunk theme
+- Real-time connection status indicator
+- Mode switching (Online/Offline/Hybrid)
+- Search panel integration
+- Responsive design for all devices
+
+## 🔧 **Installation (100% Free)**
+
+### Termux (Android)
 ```bash
-# Clone or create the project
-# Run installation
+git clone https://github.com/umenyi-bryan/Shadowgpt.git
+cd Shadowgpt
 chmod +x install.sh
 ./install.sh
-
-# Start the server
 npm run dev
 ```
 
-Manual Installation
+Linux/macOS/Windows
 
 ```bash
-# Install dependencies
+git clone https://github.com/umenyi-bryan/Shadowgpt.git
+cd Shadowgpt
 npm install
-
-# Start development server
 npm run dev
-
-# Build for production
-npm run build
-npm start
 ```
 
-📱 Platforms
+That's it! No API keys, no configuration, no payments.
 
-✅ Supported
+💬 Example Usage
 
-· Termux (Android)
-· Linux
-· macOS
-· Windows (WSL2)
-
-🌐 Access
-
-· Web interface: http://localhost:3000
-· Responsive mobile design
-· Cross-platform compatibility
-
-🛡️ Security Features
-
-Penetration Testing Tools
-
-· Network scanners
-· Vulnerability analyzers
-· Web app testers
-· Password crackers
-· Exploit frameworks
-
-AI-Powered Assistance
-
-· Code generation
-· Vulnerability explanation
-· Tool recommendations
-· Step-by-step guides
-· CTF challenge solutions
-
-🌍 Multi-Language Support
-
-1. English 🇺🇸 - en
-2. Français 🇫🇷 - fr
-3. Español 🇪🇸 - es
-4. Русский 🇷🇺 - ru
-5. Pidgin English 🇳🇬 - pidgin
-6. 中文 🇨🇳 - zh
-
-🎯 Use Cases
-
-For Security Professionals
-
-· Quick tool access
-· Code snippet library
-· Vulnerability research
-· Training and education
-
-For Students & Learners
-
-· Cybersecurity education
-· Hands-on practice
-· CTF preparation
-· Concept explanation
-
-For Developers
-
-· Secure code review
-· Vulnerability scanning
-· Security testing
-· Automation scripts
-
-🔧 Technical Stack
-
-· Frontend: Next.js 14, React 18
-· Styling: Tailwind CSS
-· Icons: Lucide React
-· Build Tool: Vite
-· Package Manager: npm
-
-⚠️ Ethical Guidelines
-
-IMPORTANT: ShadowGPT is designed for:
-
-· Authorized security testing
-· Educational purposes
-· Professional development
-· CTF competitions
-
-NEVER USE FOR:
-
-· Unauthorized access
-· Malicious activities
-· Illegal operations
-· Harming systems
-
-Always obtain proper authorization before testing any system.
-
-📁 Project Structure
+🌐 Online Mode (With Internet)
 
 ```
-shadowgpt-v6/
-├── app/
-│   ├── components/     # React components
-│   ├── utils/         # AI engine & utilities
-│   └── page.js        # Main application
-├── public/            # Static assets
-├── package.json       # Dependencies
-└── README.md         # Documentation
+You: Latest cybersecurity news
+ShadowGPT: 🌐 **Fetching real-time information...**
+[Gets current news from Hacker News API]
+
+You: What is the current AI trend?
+ShadowGPT: 🔍 **Searching the web...**
+[Fetches from DuckDuckGo/Wikipedia]
+
+You: Search for CVE-2024-1234
+ShadowGPT: 🔎 **Checking vulnerability databases...**
+[Searches Exploit-DB and other sources]
+```
+
+💻 Offline Mode (No Internet)
+
+```
+You: How to use Nmap for scanning?
+ShadowGPT: 🔐 **Using local knowledge...**
+[Provides detailed Nmap guide from local database]
+
+You: Write a Python port scanner
+ShadowGPT: 🐍 **Generating code offline...**
+[Creates Python script from local templates]
+
+You: Explain SQL injection
+ShadowGPT: 🛡️ **Cybersecurity explanation...**
+[Provides comprehensive guide from local knowledge]
+```
+
+🔄 Hybrid Mode (Automatic)
+
+```
+You: Latest Nmap techniques
+ShadowGPT: 🔄 **Checking for updates online, using local base...**
+[Combines local knowledge with online updates]
+
+You: Current blockchain security issues
+ShadowGPT: 🌐💻 **Merging online data with local analysis...**
+[Fetches current info + adds security analysis]
+```
+
+🆓 Free Online Sources Used
+
+Public APIs (No Keys Required):
+
+· 🦆 DuckDuckGo Instant Answer API - Web search and instant answers
+· 📚 Wikipedia API - Encyclopedia articles and information
+· ⚡ Hacker News API - Latest tech and security news
+· 🔓 Exploit-DB - Security vulnerabilities database
+· 🐙 GitHub Search - Code repositories and projects
+· 📖 Stack Overflow - Programming Q&A
+
+Privacy & Cost Benefits:
+
+· ✅ Zero Cost: All APIs are completely free
+· ✅ No Registration: No accounts or keys needed
+· ✅ Privacy Focused: Minimal data collection
+· ✅ Rate Limit Friendly: Designed for personal use
+· ✅ Open Access: Uses publicly available APIs
+
+🛡️ Ethical Guidelines
+
+✅ Authorized Activities
+
+· Educational cybersecurity research
+· Authorized penetration testing
+· Personal learning and development
+· CTF competition preparation
+· Security awareness training
+· General knowledge acquisition
+
+❌ Prohibited Activities
+
+· Unauthorized system access
+· Malicious web scraping
+· API abuse or rate limit violation
+· Illegal information gathering
+· Privacy violation attempts
+· Harmful content distribution
+
+Always respect website terms of service and use information ethically.
+
+🏗️ Technical Architecture
+
+```
+ShadowGPT v6.0 (Hybrid Edition)
+├── Hybrid AI Engine/
+│   ├── Online Module (Web APIs)
+│   ├── Offline Module (Local Knowledge)
+│   ├── Smart Router (Mode Selection)
+│   ├── Cache System (Performance)
+│   └── Fallback Handler (Reliability)
+├── Web Search Interface/
+│   ├── Multi-source Search
+│   ├── Privacy Protection
+│   ├── Results Processing
+│   ├── Cache Management
+│   └── Integration Layer
+├── Cybersecurity Modules/
+│   ├── Tool Database (50+ tools)
+│   ├── Real-time Vulnerability Data
+│   ├── Code Generator
+│   ├── Security Knowledge Base
+│   └── CTF Solutions
+├── User Interface/
+│   ├── Hybrid Mode Controls
+│   ├── Connection Status
+│   ├── Search Panel
+│   ├── Chat Interface
+│   └── Tools Dashboard
+└── Core Infrastructure/
+    ├── Free Public APIs
+    ├── No External Dependencies
+    ├── Offline-First Design
+    ├── Privacy by Design
+    └── Unlimited Free Use
 ```
 
 🤝 Contributing
 
-We welcome contributions! Please:
-
 1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
-4. Follow ethical guidelines
+2. Create feature branch: git checkout -b feature/amazing-feature
+3. Commit changes: git commit -m 'Add amazing feature'
+4. Push to branch: git push origin feature/amazing-feature
+5. Open a Pull Request
 
 📞 Support
 
-For issues and questions:
-
-1. Check the documentation
-2. Review existing issues
-3. Submit detailed bug reports
-4. Follow ethical disclosure
+· Issues: GitHub Issues page
+· Feature Requests: Open an issue
+· Questions: Check documentation
+· API Issues: Respect rate limits and terms
 
 📜 License
 
-MIT License - See LICENSE file for details
+MIT License - See LICENSE file for details.
+
+Copyright (c) 2024 bedusec
+
+🙏 Acknowledgments
+
+· DuckDuckGo - Privacy-focused search API
+· Wikipedia - Free knowledge API
+· Hacker News - Tech news API
+· Exploit-DB - Security research database
+· Open Source Community - Making knowledge accessible
 
 ---
 
-Created with ❤️ by bedusec
-Stay curious, stay secure! 🔐
+ShadowGPT v6.0 - Hybrid AI that works online with real-time data and offline with local intelligence! 🌐
+
+⚠️ Disclaimer: This tool is for educational and authorized use only. Always follow ethical guidelines and respect API terms.
+
+---
+
+💖 Support the Project
+
+If you find this useful, please:
+
+1. ⭐ Star the repository
+2. 🐛 Report issues
+3. 💡 Suggest features
+4. 🔗 Share with others
+
+Making hybrid AI intelligence accessible to everyone, for free! 🚀
