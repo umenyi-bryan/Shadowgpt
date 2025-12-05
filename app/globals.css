@@ -2,63 +2,238 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 10, 10, 10;
+@layer base {
+  :root {
+    --dark-100: #0a0a0f;
+    --dark-200: #0f0f1a;
+    --dark-300: #151524;
+    --dark-400: #1a1a2e;
+    --dark-500: #22223a;
+    
+    --neon-green: #00ff9d;
+    --neon-blue: #00d4ff;
+    --neon-purple: #9d4edd;
+    --neon-yellow: #ffd60a;
+    --neon-pink: #ff2e63;
+    
+    --glow-green: 0 0 20px rgba(0, 255, 157, 0.5);
+    --glow-blue: 0 0 20px rgba(0, 212, 255, 0.5);
+    --glow-purple: 0 0 20px rgba(157, 78, 221, 0.5);
+    --glow-yellow: 0 0 20px rgba(255, 214, 10, 0.5);
+    --glow-pink: 0 0 20px rgba(255, 46, 99, 0.5);
+  }
+
+  body {
+    @apply bg-dark-100 text-white antialiased;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-neon-green/30 text-neon-green;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-400;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-neon-green to-neon-blue rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply from-neon-blue to-neon-purple;
+  }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  overflow-x: hidden;
+@layer components {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-green via-neon-blue to-neon-purple;
+  }
+  
+  .border-gradient {
+    border: double 1px transparent;
+    background-image: linear-gradient(var(--dark-400), var(--dark-400)), 
+                      linear-gradient(45deg, var(--neon-green), var(--neon-blue), var(--neon-purple));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  .glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slideIn {
+    animation: slideIn 0.4s ease-out;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .neon-shadow {
+    box-shadow: 0 0 20px var(--neon-green);
+  }
+  
+  .neon-shadow-blue {
+    box-shadow: 0 0 20px var(--neon-blue);
+  }
+  
+  .neon-shadow-purple {
+    box-shadow: 0 0 20px var(--neon-purple);
+  }
 }
 
-/* Custom scrollbar */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: #111111;
-  border-radius: 4px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #00ff41;
-  border-radius: 4px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #00cc33;
-}
-
-/* Matrix text effect */
-.matrix-text {
-  text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41;
-}
-
-/* Animations */
 @keyframes glow {
-  from { text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41; }
-  to { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
+  from {
+    filter: drop-shadow(0 0 5px var(--neon-green));
+  }
+  to {
+    filter: drop-shadow(0 0 20px var(--neon-green)) drop-shadow(0 0 30px var(--neon-blue));
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-.animate-glow {
-  animation: glow 2s ease-in-out infinite alternate;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Selection color */
-::selection {
-  background-color: rgba(0, 255, 65, 0.3);
-  color: #00ff41;
+@keyframes scan {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Typography */
+.prose {
+  @apply text-gray-300;
+}
+
+.prose h1 {
+  @apply text-4xl font-bold text-neon-green mb-4;
+}
+
+.prose h2 {
+  @apply text-3xl font-bold text-neon-blue mb-3;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold text-neon-purple mb-2;
+}
+
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.prose ul {
+  @apply list-disc pl-5 mb-4;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose code:not(pre code) {
+  @apply font-mono text-sm bg-dark-400 px-1.5 py-0.5 rounded text-neon-green;
+}
+
+.prose pre {
+  @apply bg-dark-500 rounded-lg p-4 overflow-x-auto mb-4 border border-neon-green/30;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-neon-green pl-4 italic my-4;
+}
+
+/* Matrix effect */
+.matrix-bg {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--dark-300) 20%,
+    var(--dark-300) 80%,
+    transparent
+  );
+}
+
+/* Custom utilities */
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+/* Terminal cursor */
+.terminal-cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Neural network lines */
+.neural-line {
+  background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+  animation: neuralFlow 3s linear infinite;
+}
+
+@keyframes neuralFlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }

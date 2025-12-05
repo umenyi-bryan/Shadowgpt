@@ -1,49 +1,62 @@
 'use client';
-import { useEffect } from 'react';
+
+import { useEffect, useRef } from 'react';
 
 export default function MatrixRain() {
+  const canvasRef = useRef(null);
+
   useEffect(() => {
-    const canvas = document.createElement('canvas');
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '-1';
-    document.body.appendChild(canvas);
+    const width = canvas.width = window.innerWidth;
+    const height = canvas.height = window.innerHeight;
 
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*';
-    const charArray = chars.split('');
-    const fontSize = 12;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-
-    for (let i = 0; i < columns; i++) {
-      drops[i] = 1;
-    }
+    // Matrix characters - BEDUSEC themed
+    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+    const charArray = chars.split("");
+    const fontSize = 14;
+    const columns = Math.floor(width / fontSize);
+    const drops = Array(columns).fill(1);
+    
+    // Gradient colors for BEDUSEC theme
+    const colors = [
+      '#00ff9d', // neon-green
+      '#00d4ff', // neon-blue  
+      '#9d4edd', // neon-purple
+      '#ffd60a', // neon-yellow
+      '#ff2e63'  // neon-pink
+    ];
 
     function draw() {
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.04)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.fillStyle = '#00ff41';
-      ctx.font = `${fontSize}px monospace`;
+      // Semi-transparent black background for trail effect
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+      ctx.fillRect(0, 0, width, height);
 
       for (let i = 0; i < drops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        // Random character
+        const char = charArray[Math.floor(Math.random() * charArray.length)];
         
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        // Random color from BEDUSEC palette
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Draw character
+        ctx.fillStyle = color;
+        ctx.font = `${fontSize}px monospace`;
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        // Randomly reset drop
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
           drops[i] = 0;
         }
+
+        // Move drop down
         drops[i]++;
       }
     }
 
-    const interval = setInterval(draw, 35);
-
+    // Adjust canvas on resize
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -51,12 +64,27 @@ export default function MatrixRain() {
 
     window.addEventListener('resize', handleResize);
 
+    // Animation loop
+    let animationId;
+    const animate = () => {
+      draw();
+      // Slower speed for better visibility
+      animationId = setTimeout(animate, 80);
+    };
+    
+    animate();
+
     return () => {
-      clearInterval(interval);
       window.removeEventListener('resize', handleResize);
-      document.body.removeChild(canvas);
+      clearTimeout(animationId);
     };
   }, []);
 
-  return null;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none opacity-20 z-0"
+      style={{ width: '100%', height: '100%' }}
+    />
+  );
 }
