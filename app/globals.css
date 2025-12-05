@@ -4,33 +4,33 @@
 
 @layer base {
   :root {
+    /* Dark theme colors */
     --dark-100: #0a0a0f;
     --dark-200: #0f0f1a;
     --dark-300: #151524;
     --dark-400: #1a1a2e;
     --dark-500: #22223a;
     
+    /* Neon colors */
     --neon-green: #00ff9d;
     --neon-blue: #00d4ff;
     --neon-purple: #9d4edd;
     --neon-yellow: #ffd60a;
     --neon-pink: #ff2e63;
-    
-    --glow-green: 0 0 20px rgba(0, 255, 157, 0.5);
-    --glow-blue: 0 0 20px rgba(0, 212, 255, 0.5);
-    --glow-purple: 0 0 20px rgba(157, 78, 221, 0.5);
-    --glow-yellow: 0 0 20px rgba(255, 214, 10, 0.5);
-    --glow-pink: 0 0 20px rgba(255, 46, 99, 0.5);
   }
 
   body {
-    @apply bg-dark-100 text-white antialiased;
+    background-color: var(--dark-100);
+    color: white;
     font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    @apply bg-neon-green/30 text-neon-green;
+    background-color: rgba(0, 255, 157, 0.3);
+    color: var(--neon-green);
   }
 
   /* Custom Scrollbar */
@@ -40,29 +40,25 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-dark-400;
+    background-color: var(--dark-400);
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-neon-green to-neon-blue rounded-full;
+    background: linear-gradient(to bottom, var(--neon-green), var(--neon-blue));
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply from-neon-blue to-neon-purple;
+    background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
   }
 }
 
 @layer components {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-green via-neon-blue to-neon-purple;
-  }
-  
-  .border-gradient {
-    border: double 1px transparent;
-    background-image: linear-gradient(var(--dark-400), var(--dark-400)), 
-                      linear-gradient(45deg, var(--neon-green), var(--neon-blue), var(--neon-purple));
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, var(--neon-green), var(--neon-blue), var(--neon-purple));
   }
   
   .glow {
@@ -83,18 +79,6 @@
   
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  
-  .neon-shadow {
-    box-shadow: 0 0 20px var(--neon-green);
-  }
-  
-  .neon-shadow-blue {
-    box-shadow: 0 0 20px var(--neon-blue);
-  }
-  
-  .neon-shadow-purple {
-    box-shadow: 0 0 20px var(--neon-purple);
   }
 }
 
@@ -138,83 +122,73 @@
   }
 }
 
-@keyframes scan {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 0% 100%;
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
 /* Typography */
 .prose {
-  @apply text-gray-300;
+  color: rgb(209 213 219);
 }
 
 .prose h1 {
-  @apply text-4xl font-bold text-neon-green mb-4;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  color: var(--neon-green);
+  margin-bottom: 1rem;
 }
 
 .prose h2 {
-  @apply text-3xl font-bold text-neon-blue mb-3;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: var(--neon-blue);
+  margin-bottom: 0.75rem;
 }
 
 .prose h3 {
-  @apply text-xl font-semibold text-neon-purple mb-2;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--neon-purple);
+  margin-bottom: 0.5rem;
 }
 
 .prose p {
-  @apply mb-4 leading-relaxed;
+  margin-bottom: 1rem;
+  line-height: 1.75;
 }
 
 .prose ul {
-  @apply list-disc pl-5 mb-4;
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .prose li {
-  @apply mb-2;
+  margin-bottom: 0.5rem;
 }
 
 .prose code:not(pre code) {
-  @apply font-mono text-sm bg-dark-400 px-1.5 py-0.5 rounded text-neon-green;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  background-color: var(--dark-400);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  color: var(--neon-green);
 }
 
 .prose pre {
-  @apply bg-dark-500 rounded-lg p-4 overflow-x-auto mb-4 border border-neon-green/30;
+  background-color: var(--dark-500);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 255, 157, 0.3);
 }
 
 .prose blockquote {
-  @apply border-l-4 border-neon-green pl-4 italic my-4;
-}
-
-/* Matrix effect */
-.matrix-bg {
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--dark-300) 20%,
-    var(--dark-300) 80%,
-    transparent
-  );
-}
-
-/* Custom utilities */
-.backdrop-blur-lg {
-  backdrop-filter: blur(16px);
-}
-
-.glow-text {
-  text-shadow: 0 0 10px currentColor;
+  border-left: 4px solid var(--neon-green);
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1rem 0;
 }
 
 /* Terminal cursor */
@@ -227,13 +201,7 @@
   50% { opacity: 0; }
 }
 
-/* Neural network lines */
-.neural-line {
-  background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-  animation: neuralFlow 3s linear infinite;
-}
-
-@keyframes neuralFlow {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+/* Backdrop blur utilities */
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
 }
